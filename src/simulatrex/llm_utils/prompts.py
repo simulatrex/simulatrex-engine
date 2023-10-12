@@ -3,6 +3,7 @@ Author: Dominik Scherm (dom@simulatrex.ai)
 
 File: prompts.py
 Description: Prompt Templates
+Prompt Templates are used to generate prompts for the LLM.
 
 """
 from enum import Enum
