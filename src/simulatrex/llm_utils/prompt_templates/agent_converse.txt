@@ -1,0 +1,7 @@
+Facilitate a conversation between two agents:
+
+Agent A: {agent1_name}, a {agent1_age}-year-old {agent1_gender} {agent1_persona} with memories {agent1_memories}.
+
+Agent B: {agent2_name}, a {agent2_age}-year-old {agent2_gender} {agent2_persona} with memories {agent2_core_memories}.
+
+Given their profiles and the current environment context of "{environment_context}", how would their conversation unfold talking about "{topic}"?

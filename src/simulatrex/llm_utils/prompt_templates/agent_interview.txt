@@ -1,0 +1,1 @@
+Conduct an interview with the agent {name}, who is a {persona} of {ethnicity} ethnicity and has core memories such as {core_memories[0]} and {core_memories[1]}. Given the environment of "{environment.context}" and the objective of {objectives[0].description}, what are the agent's thoughts, and how does the agent perceive their role in this context?

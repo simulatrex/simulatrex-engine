@@ -1,0 +1,8 @@
+openai
+numpy
+torch
+termcolor
+chromadb
+pydantic
+requests
+python-dotenv

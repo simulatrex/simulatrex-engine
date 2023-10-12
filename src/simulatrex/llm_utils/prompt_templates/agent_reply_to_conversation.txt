@@ -1,0 +1,1 @@
+Given the agent {name}, a {age}-year-old {gender} {persona} of {ethnicity} ethnicity, who speaks {language} and has experiences like {core_memories}. If another agent with the identity {sender_identity} sends a message stating: "{received_message}", how would {name} likely reply considering their own experiences, traits, and the nature of the received message?

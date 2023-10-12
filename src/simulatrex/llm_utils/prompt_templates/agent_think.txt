@@ -1,0 +1,9 @@
+Given the agent profile of {name}, a {age}-year-old {gender} {persona} of {ethnicity} ethnicity who speaks {language}, holds core memories of {core_memories}. Taking into account the environment described as a {environment_description} of "{environment_context}" with entities like {environment_entities}.
+
+Please structure the thought as a "MemoryUnit" with the following details:
+- type: "thought" as string
+- depth: a float between 0 and 1
+- content: a string 
+- keywords: (Key takeaways from the thought) as list of strings
+
+Remember to factor in the current context, environment details, and the agent's recent memories when generating this thought.

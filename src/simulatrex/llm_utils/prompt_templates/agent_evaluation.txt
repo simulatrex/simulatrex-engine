@@ -1,0 +1,17 @@
+After analyzing the output of agent {agent_name}:
+{agent_output}
+
+Considering the simulation environment context:
+{environment.context}
+
+With the associated environment entities:
+{environment.entities}
+
+And given the environment description:
+{environment.description}
+
+1. What sentiments or patterns can be observed in {agent_name}'s reaction?
+2. How does {agent_name}'s response align or deviate from the objective: {objective.description}?
+3. Evaluate {agent_name}'s response based on the metric {objective.metric} and the target of {objective.target}.
+
+Please provide a comprehensive evaluation and feedback for the agent's output.

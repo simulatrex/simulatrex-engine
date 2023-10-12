@@ -1,0 +1,7 @@
+Provide a summary of the environment context for our agents that is of type "{environment_type}" centered around the context of "{environment_context}" with key entities such as {environment_entities}. 
+
+Here is a description of the enviroment:
+{environment_description}
+
+Here is a description of the recent events that happened:
+{events_summary}

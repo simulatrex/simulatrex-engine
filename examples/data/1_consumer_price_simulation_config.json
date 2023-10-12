@@ -1,0 +1,230 @@
+{
+  "version": "0.1",
+  "simulation": {
+    "title": "Consumer Reactions to New Product Launch",
+    "environment": {
+      "type": "DYNAMIC",
+      "context": "Consumer electronics market during a new product launch",
+      "description": "A new smartwatch product is being launched in the consumer electronics market. The product is a smartwatch with health tracking and 30-day battery life, launching in November 2023 in the United States. It's being launched through channels such as Online stores, Retail outlets, Tech blogs, and Social media influencers, targeting audiences like College students, Fashion enthusiasts, Tech bloggers, and Gym trainers. It'll be promoted in groups like Tech State University, Fashion Forward Club, Tech Today Blog, and FitLife Gym with the headline event being 'New smartwatch with health tracking and 30-day battery life launched!'.",
+      "entities": [
+        "Online stores",
+        "Retail outlets",
+        "Tech blogs",
+        "Social media influencers"
+      ],
+      "time_config": {
+        "start_time": "2023-11-01T00:00:00",
+        "end_time": "2023-11-30T23:59:59",
+        "time_multiplier": 10000
+      }
+    },
+    "agents": [
+      {
+        "id": "1",
+        "type": "LLM_AGENT",
+        "cognitive_model": "gpt-4",
+        "identity": {
+          "name": "Emily",
+          "age": 22,
+          "gender": "Female",
+          "ethnicity": "Hispanic",
+          "language": "English",
+          "persona": "College Student",
+          "personality_description": "Tech-savvy and always updated with the latest gadgets.",
+          "traits": ["Tech-savvy", "Fashionable", "Health-conscious"],
+          "interests": ["Technology", "Fashion", "Health"],
+          "knowledge_base": [
+            "Tech State University",
+            "Fashion Forward Club",
+            "Tech Today Blog",
+            "FitLife Gym"
+          ],
+          "skills": ["Tech", "Fashion", "Health"],
+          "behavior_patterns": ["Tech", "Fashion", "Health"],
+          "past_experiences": [
+            "Waited in line for the latest smartphone release",
+            "Did an internship at a major tech company"
+          ],
+          "societal_role": "College Student",
+          "affiliations": ["Tech State University", "Fashion Forward Club"],
+          "current_state": "College Student",
+          "core_memories": [
+            "Waited in line for the latest smartphone release",
+            "Did an internship at a major tech company"
+          ]
+        },
+        "initial_conditions": {
+          "awareness": 0.5
+        },
+        "relationships": [],
+        "group_affiliations": ["G1"]
+      },
+      {
+        "id": "2",
+        "type": "LLM_AGENT",
+        "cognitive_model": "gpt-4",
+        "identity": {
+          "name": "John",
+          "age": 28,
+          "gender": "Male",
+          "ethnicity": "White",
+          "language": "English",
+          "persona": "Tech Blogger",
+          "personality_description": "Passionate about latest tech trends.",
+          "traits": ["Analytical", "Curious", "Tech-savvy"],
+          "interests": ["Tech Reviews", "Gaming", "Startups"],
+          "knowledge_base": ["Tech Insider", "Gadget Geek"],
+          "skills": ["Reviewing", "Analysis", "Blogging"],
+          "behavior_patterns": [
+            "Writes weekly reviews",
+            "Attends tech conferences",
+            "Interviews tech leaders"
+          ],
+          "past_experiences": [
+            "Interviewed major tech CEOs",
+            "Received tech journalism award"
+          ],
+          "societal_role": "Blogger",
+          "affiliations": ["Tech Today Blog"],
+          "current_state": "Looking for the next big thing in tech.",
+          "core_memories": ["First blog going viral", "Meeting tech idols"]
+        },
+        "initial_conditions": { "awareness": 0.8 },
+        "relationships": [
+          {
+            "agent_id": "1",
+            "type": "friend",
+            "strength": 0.6,
+            "metadata": { "description": "College friends" }
+          }
+        ],
+        "group_affiliations": []
+      },
+      {
+        "id": "3",
+        "type": "LLM_AGENT",
+        "cognitive_model": "gpt-4",
+        "identity": {
+          "name": "Sarah",
+          "age": 30,
+          "gender": "Female",
+          "ethnicity": "African American",
+          "language": "English",
+          "persona": "Fitness Trainer",
+          "personality_description": "Passionate about fitness and tech.",
+          "traits": ["Disciplined", "Motivated", "Health-conscious"],
+          "interests": ["Fitness", "Health tech", "Yoga"],
+          "knowledge_base": ["FitLife Gym", "Health and Wellness Conferences"],
+          "skills": ["Training", "Motivating", "Healthy lifestyle coaching"],
+          "behavior_patterns": [
+            "Daily workouts",
+            "Promotes health tech",
+            "Attends wellness seminars"
+          ],
+          "past_experiences": [
+            "Won fitness competitions",
+            "Yoga trainer certification"
+          ],
+          "societal_role": "Fitness Trainer",
+          "affiliations": ["FitLife Gym"],
+          "current_state": "Preparing for a fitness workshop.",
+          "core_memories": ["First fitness award", "Training a celebrity"]
+        },
+        "initial_conditions": { "awareness": 0.9 },
+        "relationships": [],
+        "group_affiliations": ["G1"]
+      },
+      {
+        "id": "4",
+        "type": "LLM_AGENT",
+        "cognitive_model": "gpt-4",
+        "identity": {
+          "name": "Robert",
+          "age": 45,
+          "gender": "Male",
+          "ethnicity": "Caucasian",
+          "language": "English",
+          "persona": "Business Executive",
+          "personality_description": "Always busy, less tech-aware, relies on reviews and feedback.",
+          "traits": ["Decision-maker", "Strategic", "Less tech-savvy"],
+          "interests": ["Golf", "Reading", "Travelling"],
+          "knowledge_base": ["Harvard Business", "Forbes"],
+          "skills": ["Decision making", "Management"],
+          "behavior_patterns": ["Delegates tech choices", "Reads reviews"],
+          "past_experiences": [
+            "Bought a smartwatch once but never used it",
+            "Relies on secretary for tech help"
+          ],
+          "societal_role": "CEO",
+          "affiliations": ["Harvard Club"],
+          "current_state": "Reviewing quarterly results",
+          "core_memories": ["Board meetings", "Major decisions"]
+        },
+        "initial_conditions": { "awareness": 0.2 },
+        "relationships": [],
+        "group_affiliations": ["G2"]
+      }
+    ],
+    "groups": [
+      {
+        "id": "G1",
+        "type": "college",
+        "member_agent_ids": ["1", "3"],
+        "metadata": {
+          "name": "Tech State University",
+          "location": "California"
+        }
+      },
+      {
+        "id": "G2",
+        "type": "Business Club",
+        "member_agent_ids": ["4"],
+        "metadata": {
+          "name": "Harvard Business Club",
+          "location": "Massachusetts"
+        }
+      }
+    ],
+    "events": [
+      {
+        "id": "1",
+        "type": "product_release",
+        "source": "Online stores",
+        "content": "New smartwatch with health tracking and 30-day battery life launched!",
+        "impact": 0.7,
+        "scheduled_time": "2023-11-15T09:00:00"
+      },
+      {
+        "id": "2",
+        "type": "product_review",
+        "source": "Tech blogs",
+        "content": "First hands-on review of the smartwatch reveals impressive health tracking features but concerns over the price.",
+        "impact": 0.6,
+        "scheduled_time": "2023-11-10T12:00:00"
+      },
+      {
+        "id": "3",
+        "type": "influencer_feedback",
+        "source": "Social media influencers",
+        "content": "Popular influencer praises the smartwatch's battery life and design.",
+        "impact": 0.8,
+        "scheduled_time": "2023-11-05T16:00:00"
+      }
+    ],
+    "evaluation": {
+      "objectives": [
+        {
+          "id": "1",
+          "description": "Predict consumer reactions to a new smartwatch product.",
+          "metric": "Buying intention among personas",
+          "target": "70% positive buying intention"
+        }
+      ],
+      "metrics": [
+        "Overall buying intention",
+        "Most influenced persona",
+        "Most influential source"
+      ]
+    }
+  }
+}

@@ -1,0 +1,138 @@
+{
+  "version": "0.1",
+  "simulation": {
+    "title": "Brand Crisis Management Simulation",
+    "environment": {
+      "type": "DYNAMIC",
+      "context": "Brand reputation in a fast-paced market",
+      "description": "A leading consumer electronics company, Techtronics Inc., is navigating the global market while constantly monitoring potential PR crises related to their products, services, partnerships, or external events.",
+      "entities": [
+        "Techtronics Inc.",
+        "Media Outlets",
+        "Competitors",
+        "Consumers",
+        "Regulatory Bodies"
+      ],
+      "time_config": {
+        "start_time": "2024-01-01T00:00:00",
+        "end_time": "2024-12-31T23:59:59",
+        "time_multiplier": 1000
+      }
+    },
+    "agents": [
+      {
+        "id": "A1",
+        "type": "LLM_AGENT",
+        "cognitive_model": "gpt-4",
+        "identity": {
+          "name": "Techtronics Inc. PR Team",
+          "age": 10,
+          "gender": "Not Applicable",
+          "ethnicity": "Diverse",
+          "language": "English",
+          "persona": "Corporate PR Team",
+          "personality_description": "Strategically-minded, proactive in crisis management.",
+          "traits": ["Strategic", "Responsive", "Brand-loyal"],
+          "interests": [
+            "Brand reputation",
+            "Media relations",
+            "Crisis communication"
+          ],
+          "knowledge_base": [
+            "Company history",
+            "Previous PR strategies",
+            "Market dynamics"
+          ],
+          "skills": [
+            "Damage control",
+            "Media interaction",
+            "Stakeholder communication"
+          ],
+          "behavior_patterns": [],
+          "past_experiences": [
+            "Handled minor PR issues",
+            "Coordinated product launches"
+          ],
+          "societal_role": "Guardian of the brand's reputation",
+          "affiliations": ["Techtronics Inc."],
+          "current_state": "Active",
+          "core_memories": []
+        },
+        "initial_conditions": { "awareness": 0.95 },
+        "relationships": [],
+        "group_affiliations": []
+      },
+      {
+        "id": "A2",
+        "type": "LLM_AGENT",
+        "cognitive_model": "gpt-4",
+        "identity": {
+          "name": "Global Media",
+          "age": 25,
+          "gender": "Not Applicable",
+          "ethnicity": "Diverse",
+          "language": "English",
+          "persona": "International Media Outlets",
+          "personality_description": "Always on the lookout for breaking news.",
+          "traits": ["Inquisitive", "Fast-paced", "Broad reach"],
+          "interests": ["Breaking news", "Corporate stories", "Market trends"],
+          "knowledge_base": [
+            "World news",
+            "Previous brand stories",
+            "Public interests"
+          ],
+          "behavior_patterns": [],
+          "skills": ["Quick reporting", "Analysis", "Public reach"],
+          "past_experiences": [
+            "Reported major brand crises",
+            "Conducted company interviews"
+          ],
+          "societal_role": "Reporter and influencer of public opinion",
+          "affiliations": ["Various media networks"],
+          "current_state": "Active",
+          "core_memories": []
+        },
+        "initial_conditions": { "awareness": 0.9 },
+        "relationships": [],
+        "group_affiliations": []
+      }
+    ],
+    "groups": [],
+    "events": [
+      {
+        "id": "E1",
+        "type": "crisis_event",
+        "source": "External Review",
+        "content": "A well-known tech reviewer discovers a major flaw in Techtronics Inc.'s latest device, potentially compromising user data.",
+        "impact": 0.9,
+        "scheduled_time": "2024-05-15T09:00:00"
+      },
+      {
+        "id": "E2",
+        "type": "crisis_event",
+        "source": "Competitor",
+        "content": "A competitor publicly calls out Techtronics Inc. for allegedly copying their design.",
+        "impact": 0.7,
+        "scheduled_time": "2024-07-10T14:00:00"
+      }
+    ],
+    "evaluation": {
+      "objectives": [
+        {
+          "id": "O1",
+          "description": "Assess immediate response strategy to a product flaw revelation.",
+          "metric": "Speed and efficacy of response post-event",
+          "target": "Response within 6 hours with a clear action plan"
+        },
+        {
+          "id": "O2",
+          "description": "Evaluate brand sentiment after competitor accusation.",
+          "metric": "Sentiment analysis 48 hours post-event",
+          "target": "Maintain a 60% positive brand sentiment"
+        }
+      ],
+      "metrics": ["Response time", "Brand sentiment", "Public reception"],
+      "output_location": "./crisis_management_results/"
+    }
+  }
+}
