@@ -69,7 +69,7 @@ class VectorDB:
         self.collection.add(
             documents=[content],
             metadatas=metadatas or [{}],  # Empty metadata if not provided
-            ids=ids or [f"doc.1"],  # Default ID generation if not provided
+            ids=ids,
         )
 
     def query_memory(

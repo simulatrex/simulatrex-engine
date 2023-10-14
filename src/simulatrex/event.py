@@ -10,6 +10,8 @@ from typing import Any, List, Union
 from simulatrex.utils.logger_config import Logger
 from simulatrex.utils.time_utils import TimeUtils
 
+logger = Logger()
+
 
 class Event:
     def __init__(
@@ -70,6 +72,7 @@ class EventEngine:
         self.init_events()
         for event in self.events:
             if self._should_trigger(event, previous_time, current_time):
+                logger.debug(f"Event triggered: {event.id}")
                 self.active_events.append(event)
                 event.is_triggered = True
             else:

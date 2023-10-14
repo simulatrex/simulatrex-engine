@@ -43,7 +43,9 @@ class BaseMemory:
 
     def add_memory(self, memory_unit: MemoryUnit):
         self.vector_db.add_memory(
-            memory_unit.content, metadatas=[memory_unit.get_metadata()]
+            memory_unit.content,
+            metadatas=[memory_unit.get_metadata()],
+            ids=[memory_unit.id],
         )
 
     def retrieve_memory(self, content: str, n_results: int):
