@@ -158,7 +158,7 @@
     "events": [
       {
         "id": "E1",
-        "type": "policy_announcement",
+        "type": "announcement",
         "source": "City Hall",
         "content": "Announcement of a new policy aimed at encouraging electric vehicle usage within the city.",
         "impact": 0.8,
@@ -166,7 +166,7 @@
       },
       {
         "id": "E2",
-        "type": "public_feedback",
+        "type": "feedback",
         "source": "Local Residents' Association",
         "content": "A public meeting is organized to discuss the potential effects of the new policy on residents.",
         "impact": 0.6,
@@ -177,7 +177,7 @@
       "objectives": [
         {
           "id": "O1",
-          "description": "Understand the immediate reactions of community stakeholders to the new EV policy.",
+          "description": "Understand the immediate reactions of community stakeholders to the new policy.",
           "metric": "Initial sentiment analysis post-announcement",
           "target": "70% positive sentiment"
         },
