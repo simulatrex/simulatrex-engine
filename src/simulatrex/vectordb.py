@@ -6,6 +6,7 @@ Description: Defines the vectordb class, which is a wrapper around ChromaDB
 
 """
 import os
+import shutil
 import chromadb
 from chromadb.utils import embedding_functions
 from dotenv import load_dotenv
@@ -44,6 +45,7 @@ class VectorDB:
 
             current_dir = os.path.dirname(os.path.abspath(__file__))
             chroma_db_path = os.path.join(current_dir, "chromadb")
+
             self.client = chromadb.PersistentClient(path=chroma_db_path)
 
             self.collection = self.client.create_collection(

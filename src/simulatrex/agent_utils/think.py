@@ -5,7 +5,7 @@ File: think.py
 Description: Think and create memories based  on environment settings
 
 """
-from simulatrex.memory import MemoryUnit
+from simulatrex.memory import MemoryUnitModel
 from simulatrex.environment import BaseEnvironment
 from simulatrex.config import AgentIdentity
 from simulatrex.llm_utils.prompts import PromptManager, TemplateType
@@ -39,9 +39,9 @@ async def think(
         environment_entities=", ".join(environment.entities),
     )
 
-    response = await cognitive_model.generate_structured_output(prompt, MemoryUnit)
+    response = await cognitive_model.generate_structured_output(prompt, MemoryUnitModel)
 
-    memory.short_term_memory.add_memory(response)
+    # memory.short_term_memory.add_memory(response)
     memory.long_term_memory.add_memory(response)
 
     logger.debug(response)

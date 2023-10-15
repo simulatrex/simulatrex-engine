@@ -15,6 +15,7 @@ class TemplateType(Enum):
     AGENT_CONVERSE = "agent_converse.txt"
     AGENT_THINK = "agent_think.txt"
     AGENT_EVALUATION = "agent_evaluation.txt"
+    AGENT_DECIDE_ON_CONVERSATION = "agent_decide_on_conversation.txt"
     AGENT_START_CONVERSATION = "agent_start_conversation.txt"
     AGENT_REPLY_TO_CONVERSATION = "agent_reply_to_conversation.txt"
     SUMMARIZE_ENVIRONMENT = "summarize_environment.txt"

@@ -28,5 +28,6 @@ setup(
         "python-dotenv",
         "requests",
         "instructor",
+        "SQLAlchemy",
     ],
 )

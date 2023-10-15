@@ -7,6 +7,7 @@ Description: Defines an agent, central unit in our simulation
 """
 from typing import List
 import uuid
+from pydantic import BaseModel
 
 from simulatrex.environment import BaseEnvironment
 from simulatrex.config import (
@@ -126,9 +127,7 @@ class LLMAgent(BaseAgent):
         prompt = PromptManager().get_filled_template(
             TemplateType.AGENT_EVALUATION,
             agent_name=self.identity.name,
-            agent_output=self.memory.long_term_memory.retrieve_memory(
-                environment.context, n_results=10
-            ),
+            agent_output=self.memory.long_term_memory.retrieve_memory(n_results=10),
             environment=environment,
             objective=objective,
         )
@@ -136,12 +135,63 @@ class LLMAgent(BaseAgent):
         response = await self.cognitive_model.ask(prompt)
         return response
 
-    def initiate_conversation(self):
+    async def generate_message_content(self, environment: BaseEnvironment) -> str:
+        # Use the cognitive model to decide when to send a message
+        logger.debug(f"Agent {self.id} is deciding whether to send a message")
+
+        prompt = PromptManager().get_filled_template(
+            TemplateType.AGENT_START_CONVERSATION,
+            agent_name=self.identity.name,
+            environment=environment,
+        )
+
+        response = await self.cognitive_model.ask(prompt)
+        return response
+
+    class AgentConverseResponseModel(BaseModel):
+        should_converse: bool
+        receiver_ids: List[str]
+
+    async def decide_on_converse(
+        self, environment: BaseEnvironment
+    ) -> AgentConverseResponseModel:
+        # Use the cognitive model to decide when to send a message
+        logger.debug(f"Agent {self.id} is deciding whether to send a message")
+
+        last_thoughts = self.memory.long_term_memory.query_memory_by_type(
+            "thought", n_results=3
+        )
+
+        agent_thoughts = []
+        for thought in last_thoughts:
+            logger.debug(thought.content)
+            agent_thoughts.append(thought.content)
+
+        agent_relationships = []
+        for relationship in self.relationships:
+            logger.debug(relationship.summary())
+            agent_relationships.append(relationship.summary())
+
+        prompt = PromptManager().get_filled_template(
+            TemplateType.AGENT_DECIDE_ON_CONVERSATION,
+            agent_name=self.identity.name,
+            agent_thoughts=agent_thoughts,
+            agent_relationships=agent_relationships,
+            environment=environment,
+        )
+
+        response = await self.cognitive_model.generate_structured_output(
+            prompt, response_model=self.AgentConverseResponseModel
+        )
+
+        return response
+
+    async def initiate_conversation(self, environment: BaseEnvironment):
         # Use the cognitive model to decide when to send a message and what the content should be
-        if self.cognitive_model.should_send_message():  # You need to implement this
-            content = self.cognitive_model.generate_message_content()  # And this
-            receiver_id = self.choose_receiver()  # And this
-            self.send_message(receiver_id, content)
+        reponse = await self.decide_on_converse(environment)
+        if reponse.should_converse:
+            content = await self.generate_message_content(environment)
+            await self.send_message(reponse.receiver_ids, content)
 
     def send_message(self, receiver_id: str, content: str):
         message_id = str(uuid.uuid4())

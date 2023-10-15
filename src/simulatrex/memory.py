@@ -11,15 +11,19 @@ from typing import List
 
 from pydantic import BaseModel
 
+from simulatrex.db import SqliteDB, MemoryUnitDB
+from simulatrex.utils.logger_config import Logger
 from simulatrex.utils.time_utils import TimeUtils
 from simulatrex.vectordb import VectorDB
 
+logger = Logger()
 
-class MemoryUnit(BaseModel):
+
+class MemoryUnitModel(BaseModel):
     type: str
     depth: float
     content: str
-    keywords: List[str]
+    keywords: str
 
     id: str = str(uuid.uuid4())
     created: int = 0
@@ -32,32 +36,23 @@ class MemoryUnit(BaseModel):
             "depth": self.depth,
             "created": self.created,
             "last_accessed": self.last_accessed,
-            "keywords": ",".join(self.keywords),
+            "keywords": self.keywords,
         }
 
 
-class BaseMemory:
-    def __init__(self, id: str):
-        self.id = id
-        self.vector_db = VectorDB(collection_name=id)
+class ShortTermMemory:
+    def __init__(self, id: str, decay_factor: int):
+        stm_id = "stm_" + id
+        self.vector_db = VectorDB(stm_id)
+        self.decay_factor = decay_factor
 
-    def add_memory(self, memory_unit: MemoryUnit):
+    def add_memory(self, memory_unit: MemoryUnitModel):
+        logger.debug(f"Adding memory with id {memory_unit.id} to {self.id}")
         self.vector_db.add_memory(
             memory_unit.content,
             metadatas=[memory_unit.get_metadata()],
             ids=[memory_unit.id],
         )
-
-    def retrieve_memory(self, content: str, n_results: int):
-        results = self.vector_db.query_memory(content, n_results=n_results)
-        return results
-
-
-class ShortTermMemory(BaseMemory):
-    def __init__(self, id: str, decay_factor: int):
-        stm_id = "stm_" + id
-        super().__init__(stm_id)
-        self.decay_factor = decay_factor
 
     def retrieve_memory(self, content: str, n_results: int, current_timestamp: int):
         results = self.vector_db.query_memory(content, n_results=n_results)
@@ -74,7 +69,15 @@ class ShortTermMemory(BaseMemory):
         return results
 
 
-class LongTermMemory(BaseMemory):
+class LongTermMemory:
     def __init__(self, id: str):
         ltm_id = "ltm_" + id
-        super().__init__(ltm_id)
+        self.db = SqliteDB(ltm_id)
+
+    def add_memory(self, memory_unit: MemoryUnitModel):
+        memory_unit_db = MemoryUnitDB(**memory_unit.model_dump())
+        logger.debug(f"Adding memory with id {memory_unit_db.id}")
+        self.db.insert_memory(memory_unit_db)
+
+    def query_memory_by_type(self, type: str, n_results: int = 5):
+        return self.db.query_memory_by_type(type, n_results)

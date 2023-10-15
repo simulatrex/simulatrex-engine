@@ -96,6 +96,7 @@ class SimulationEngine:
             for agent in self.agents:
                 # Agent thinks about environment context
                 await agent.think(self.environment)
+                await agent.initiate_conversation(self.environment)
 
                 # Agent perceives the recent events
                 for event in recent_events:
