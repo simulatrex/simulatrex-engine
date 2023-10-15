@@ -1,5 +1,7 @@
 # Simulatrex
 
+Full description and examples can be found [here](ttps://dominikscherm.substack.com/p/introducing-simulatrex).
+
 Simulatrex is a Large Language Model (LLM) based simulation framework designed to run social science simulations involving multi-agent structures and hierarchies. It provides a robust and flexible platform for creating and running complex simulations, making it an ideal tool for researchers and developers in the field of social sciences, artificial intelligence, and more.
 
 ## Features
