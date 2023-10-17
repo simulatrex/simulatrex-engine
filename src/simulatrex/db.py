@@ -27,6 +27,7 @@ class MemoryUnitDB(Base):
     keywords = Column(String)
     created = Column(Integer, default=0)
     last_accessed = Column(Integer, default=0)
+    score = Column(Float, default=0.0)
 
 
 class SqliteDB:

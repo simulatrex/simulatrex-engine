@@ -21,16 +21,16 @@ async def perceive(
     memory: AgentMemory,
     identity: AgentIdentity,
     environment: BaseEnvironment,
+    current_timestamp: int,
     event: Event,
 ):
     """
     Perceive the current event and what is happening
     """
     recent_memories = memory.short_term_memory.retrieve_memory(
-        event.content, n_results=5
+        event.content, n_results=5, current_timestamp=current_timestamp
     )
-
-    logger.debug("Recent memories: %s", recent_memories)
+    recent_memories_content = [memory.content for memory in recent_memories]
 
     # Based on event content make a decision and request model
     prompt = PromptManager().get_filled_template(
@@ -42,7 +42,7 @@ async def perceive(
         ethnicity=identity.ethnicity,
         language=identity.language,
         core_memories=", ".join(identity.core_memories),
-        recent_memories=", ".join(recent_memories),
+        recent_memories=", ".join(recent_memories_content),
         environment_description=environment.description,
         environment_context=environment.context,
         environment_entities=", ".join(environment.entities),

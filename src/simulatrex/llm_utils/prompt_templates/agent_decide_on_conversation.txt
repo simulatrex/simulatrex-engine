@@ -4,7 +4,7 @@ Here are his last thoughts:
 {agent_thoughts}
 
 Here is the current environment context:
-{envrioment_context}
+{environment.context}
 
 And here are his relationships to other agents:
 {agent_relationships}

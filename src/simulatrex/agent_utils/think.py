@@ -41,7 +41,10 @@ async def think(
 
     response = await cognitive_model.generate_structured_output(prompt, MemoryUnitModel)
 
-    # memory.short_term_memory.add_memory(response)
-    memory.long_term_memory.add_memory(response)
+    logger.debug(f"Agent {identity.name} thought: {response}")
 
-    logger.debug(response)
+    _memory = MemoryUnitModel(**response.dict())
+    memory.short_term_memory.add_memory(_memory)
+    memory.long_term_memory.add_memory(_memory)
+
+    logger.debug(f"Current thought: {response.content}")

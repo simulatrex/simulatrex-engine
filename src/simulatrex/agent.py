@@ -31,14 +31,13 @@ logger = Logger()
 class Message:
     def __init__(
         self,
-        id: str,
         sender_id: str,
         receiver_id: str,
         content: str,
         group_id: str = None,
         metadata: any = {},
     ):
-        self.id = id
+        self.id = str(uuid.uuid4())
         self.sender_id = sender_id
         self.receiver_id = receiver_id
         self.content = content
@@ -89,9 +88,9 @@ class LLMAgent(BaseAgent):
         logger.debug(
             f"Agent {self.id} is using cognitive model {self.cognitive_model_id}"
         )
-        self.init_cognition()
+        self._init_cognition()
 
-    def init_cognition(self):
+    def _init_cognition(self):
         if self.cognitive_model_id == CognitiveModel.GPT_4.value:
             self.cognitive_model = OpenAILanguageModel(
                 model_id=CognitiveModel.GPT_4, agent_id=self.id
@@ -105,13 +104,16 @@ class LLMAgent(BaseAgent):
                 f"Model {self.cognitive_model_id} not implemented yet"
             )
 
-    async def perceive_event(self, event: Event, environment: BaseEnvironment):
+    async def perceive_event(
+        self, event: Event, environment: BaseEnvironment, current_timestamp: int
+    ):
         logger.debug(f"Agent {self.id} is processing event {event.id}")
         await perceive(
             self.cognitive_model,
             self.memory,
             self.identity,
             environment,
+            current_timestamp,
             event,
         )
 
@@ -127,22 +129,11 @@ class LLMAgent(BaseAgent):
         prompt = PromptManager().get_filled_template(
             TemplateType.AGENT_EVALUATION,
             agent_name=self.identity.name,
-            agent_output=self.memory.long_term_memory.retrieve_memory(n_results=10),
+            agent_output=self.memory.long_term_memory.query_memory_by_type(
+                "thought", n_results=8
+            ),
             environment=environment,
             objective=objective,
-        )
-
-        response = await self.cognitive_model.ask(prompt)
-        return response
-
-    async def generate_message_content(self, environment: BaseEnvironment) -> str:
-        # Use the cognitive model to decide when to send a message
-        logger.debug(f"Agent {self.id} is deciding whether to send a message")
-
-        prompt = PromptManager().get_filled_template(
-            TemplateType.AGENT_START_CONVERSATION,
-            agent_name=self.identity.name,
-            environment=environment,
         )
 
         response = await self.cognitive_model.ask(prompt)
@@ -152,7 +143,28 @@ class LLMAgent(BaseAgent):
         should_converse: bool
         receiver_ids: List[str]
 
-    async def decide_on_converse(
+    async def initiate_conversation(self, environment: BaseEnvironment):
+        # Use the cognitive model to decide when to send a message and what the content should be
+        reponse = await self._decide_on_converse(environment)
+        if reponse.should_converse:
+            content = await self._generate_message_content(environment)
+            await self._send_message(reponse.receiver_ids, content)
+
+    async def _generate_message_content(self, environment: BaseEnvironment) -> str:
+        # Generate a message based on the agent memory and environment
+        prompt = PromptManager().get_filled_template(
+            TemplateType.AGENT_START_CONVERSATION,
+            last_memory=self.memory.long_term_memory.query_memory_by_type(
+                "thought", n_results=1
+            ),
+            agent_name=self.identity.name,
+            environment=environment,
+        )
+
+        response = await self.cognitive_model.ask(prompt)
+        return response
+
+    async def _decide_on_converse(
         self, environment: BaseEnvironment
     ) -> AgentConverseResponseModel:
         # Use the cognitive model to decide when to send a message
@@ -164,7 +176,6 @@ class LLMAgent(BaseAgent):
 
         agent_thoughts = []
         for thought in last_thoughts:
-            logger.debug(thought.content)
             agent_thoughts.append(thought.content)
 
         agent_relationships = []
@@ -172,33 +183,38 @@ class LLMAgent(BaseAgent):
             logger.debug(relationship.summary())
             agent_relationships.append(relationship.summary())
 
-        prompt = PromptManager().get_filled_template(
-            TemplateType.AGENT_DECIDE_ON_CONVERSATION,
-            agent_name=self.identity.name,
-            agent_thoughts=agent_thoughts,
-            agent_relationships=agent_relationships,
-            environment=environment,
-        )
+        if agent_relationships:
+            logger.info(f"Relationships found for the agent: {agent_relationships}")
+            prompt = PromptManager().get_filled_template(
+                TemplateType.AGENT_DECIDE_ON_CONVERSATION,
+                agent_name=self.identity.name,
+                agent_thoughts=agent_thoughts,
+                agent_relationships=agent_relationships,
+                environment=environment,
+            )
 
-        response = await self.cognitive_model.generate_structured_output(
-            prompt, response_model=self.AgentConverseResponseModel
-        )
+            response = await self.cognitive_model.generate_structured_output(
+                prompt, response_model=self.AgentConverseResponseModel
+            )
 
-        return response
+            if response.should_converse:
+                logger.info(f"Agent {self.id} decided to start a conversation")
+            else:
+                logger.info(f"Agent {self.id} decided not to start a conversation")
 
-    async def initiate_conversation(self, environment: BaseEnvironment):
-        # Use the cognitive model to decide when to send a message and what the content should be
-        reponse = await self.decide_on_converse(environment)
-        if reponse.should_converse:
-            content = await self.generate_message_content(environment)
-            await self.send_message(reponse.receiver_ids, content)
+            return response
 
-    def send_message(self, receiver_id: str, content: str):
-        message_id = str(uuid.uuid4())
-        message = Message(message_id, self.id, receiver_id, content)
+        else:
+            logger.info(f"No relationships found for the agent")
+            return self.AgentConverseResponseModel(
+                should_converse=False, receiver_ids=[]
+            )
+
+    def _send_message(self, receiver_id: str, content: str):
+        message = Message(self.id, receiver_id, content)
         return message
 
-    async def process_messages(self):
+    async def _process_messages(self):
         for message in self.message_queue:
             # Use the cognitive model to produce results
             converse_prompt = PromptManager().get_filled_template(
@@ -217,7 +233,7 @@ class LLMAgent(BaseAgent):
             response_content = await self.cognitive_model.ask(converse_prompt)
 
             # Send a reply message
-            self.send_message(message.sender_id, response_content)
+            self._send_message(message.sender_id, response_content)
 
             # Remove current message object from queue
             self.message_queue = [

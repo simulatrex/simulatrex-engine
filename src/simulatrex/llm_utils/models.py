@@ -6,6 +6,7 @@ Description: LLM Models
 
 """
 import os
+from abc import ABC, abstractmethod
 
 from dotenv import load_dotenv
 from pydantic import BaseModel
@@ -23,12 +24,14 @@ logger = Logger()
 DEFAULT_SYSTEM_PROMPT = "This is a real-world like simulation. Try to answer the following questions as best as possible:"
 
 
-class BaseLanguageModel:
+class BaseLanguageModel(ABC):
+    @abstractmethod
     async def ask(
         self, prompt: str, context_prompt=DEFAULT_SYSTEM_PROMPT, temperature=0.9
     ) -> str:
         pass
 
+    @abstractmethod
     async def generate_structured_output(
         self,
         prompt: str,
@@ -74,6 +77,7 @@ class OpenAILanguageModel(BaseLanguageModel):
             )
             response_message = chat_completion["choices"][0].message.content
 
+            logger.debug(f"Agent id: {self.agent_id}")
             # Log the response
             if self.agent_id:
                 logger.log_agent_response(self.agent_id, response_message)

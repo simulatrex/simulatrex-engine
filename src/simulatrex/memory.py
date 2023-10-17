@@ -7,7 +7,6 @@ Description: Defines the memory class, which is used to define the memory of an 
 """
 import math
 import uuid
-from typing import List
 
 from pydantic import BaseModel
 
@@ -25,9 +24,14 @@ class MemoryUnitModel(BaseModel):
     content: str
     keywords: str
 
-    id: str = str(uuid.uuid4())
+    id: str
     created: int = 0
     last_accessed: int = 0
+    score: float = 0.0
+
+    def __init__(self, **data):
+        super().__init__(**data)
+        self.id = str(uuid.uuid4())
 
     def get_metadata(self):
         return {
@@ -37,6 +41,7 @@ class MemoryUnitModel(BaseModel):
             "created": self.created,
             "last_accessed": self.last_accessed,
             "keywords": self.keywords,
+            "score": self.score,
         }
 
 
@@ -47,7 +52,7 @@ class ShortTermMemory:
         self.decay_factor = decay_factor
 
     def add_memory(self, memory_unit: MemoryUnitModel):
-        logger.debug(f"Adding memory with id {memory_unit.id} to {self.id}")
+        logger.debug(f"Adding STM memory with id {memory_unit.id}")
         self.vector_db.add_memory(
             memory_unit.content,
             metadatas=[memory_unit.get_metadata()],
@@ -55,17 +60,29 @@ class ShortTermMemory:
         )
 
     def retrieve_memory(self, content: str, n_results: int, current_timestamp: int):
-        results = self.vector_db.query_memory(content, n_results=n_results)
+        query_results = self.vector_db.query_memory(content, n_results=n_results)
+        metadata_entries = query_results["metadatas"][0]
+        results = []
 
         # Apply decay factor to the results based on the 'created' date
-        for memory in results:
-            time_diff = current_timestamp - TimeUtils.to_timestamp(
-                memory["last_accessed"]
+        for i, metadata in enumerate(metadata_entries):
+            logger.debug(f"Metadata: {metadata}")
+            time_diff = current_timestamp - metadata["last_accessed"]
+            metadata["score"] *= math.exp(-self.decay_factor * time_diff)
+            content = query_results["documents"][0][i]
+
+            memory = MemoryUnitModel(
+                id=metadata["id"],
+                type=metadata["type"],
+                depth=metadata["depth"],
+                content=content,
+                keywords=metadata["keywords"],
+                score=metadata["score"],
             )
-            memory["score"] *= math.exp(-self.decay_factor * time_diff)
+            results.append(memory)
 
         # Sort the results by score in descending order
-        results.sort(key=lambda x: x["score"], reverse=True)
+        results.sort(key=lambda x: x.score, reverse=True)
         return results
 
 
@@ -76,7 +93,7 @@ class LongTermMemory:
 
     def add_memory(self, memory_unit: MemoryUnitModel):
         memory_unit_db = MemoryUnitDB(**memory_unit.model_dump())
-        logger.debug(f"Adding memory with id {memory_unit_db.id}")
+        logger.debug(f"Adding LTM memory with id {memory_unit_db.id}")
         self.db.insert_memory(memory_unit_db)
 
     def query_memory_by_type(self, type: str, n_results: int = 5):
