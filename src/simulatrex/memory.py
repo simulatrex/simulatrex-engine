@@ -85,6 +85,8 @@ class ShortTermMemory:
                 content=content,
                 keywords=metadata["keywords"],
                 score=metadata["score"],
+                created=metadata["created"],
+                last_accessed=current_timestamp,
             )
             results.append(memory)
 

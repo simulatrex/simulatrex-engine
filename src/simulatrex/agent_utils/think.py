@@ -45,9 +45,10 @@ async def think(
 
     _memory = MemoryUnitModel(
         **response.dict(),
-        created=environment.get_current_time(),
-        last_accessed=environment.get_current_time(),
     )
+    _memory.created = environment.get_current_time()
+    _memory.last_accessed = environment.get_current_time()
+
     memory.short_term_memory.add_memory(_memory)
     memory.long_term_memory.add_memory(_memory)
 
