@@ -21,7 +21,7 @@ from simulatrex.agent_utils.types import AgentType, AgentMemory, CognitiveModel
 from simulatrex.agent_utils.perceive import perceive
 from simulatrex.agent_utils.think import think
 from simulatrex.event import Event
-from simulatrex.utils.logger_config import Logger
+from simulatrex.utils.log import Logger
 from simulatrex.llm_utils.models import OpenAILanguageModel, LlamaLanguageModel
 from simulatrex.llm_utils.prompts import PromptManager, TemplateType
 
@@ -66,7 +66,7 @@ class BaseAgent:
             self.id,
             decay_factor=initial_conditions["decay_factor"]
             if "decay_factor" in initial_conditions
-            else 0.5,
+            else 0.995,
         )
 
 
@@ -105,7 +105,11 @@ class LLMAgent(BaseAgent):
             )
 
     async def perceive_event(
-        self, event: Event, environment: BaseEnvironment, current_timestamp: int
+        self,
+        event: Event,
+        environment: BaseEnvironment,
+        current_timestamp: int,
+        time_multiplier: int,
     ):
         logger.debug(f"Agent {self.id} is processing event {event.id}")
         await perceive(
@@ -114,6 +118,7 @@ class LLMAgent(BaseAgent):
             self.identity,
             environment,
             current_timestamp,
+            time_multiplier,
             event,
         )
 

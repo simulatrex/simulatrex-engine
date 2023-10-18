@@ -9,7 +9,7 @@ from simulatrex.environment import BaseEnvironment
 from simulatrex.config import AgentIdentity
 from simulatrex.llm_utils.prompts import PromptManager, TemplateType
 from simulatrex.llm_utils.models import BaseLanguageModel
-from simulatrex.utils.logger_config import Logger
+from simulatrex.utils.log import Logger
 from simulatrex.event import Event
 from .types import AgentMemory
 
@@ -22,13 +22,17 @@ async def perceive(
     identity: AgentIdentity,
     environment: BaseEnvironment,
     current_timestamp: int,
+    time_multiplier: int,
     event: Event,
 ):
     """
     Perceive the current event and what is happening
     """
     recent_memories = memory.short_term_memory.retrieve_memory(
-        event.content, n_results=5, current_timestamp=current_timestamp
+        event.content,
+        n_results=5,
+        current_timestamp=current_timestamp,
+        time_multiplier=time_multiplier,
     )
     recent_memories_content = [memory.content for memory in recent_memories]
 

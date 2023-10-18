@@ -13,7 +13,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-from simulatrex.utils.logger_config import Logger
+from simulatrex.utils.log import Logger
 
 logger = Logger()
 

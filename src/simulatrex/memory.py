@@ -5,14 +5,12 @@ File: memory.py
 Description: Defines the memory class, which is used to define the memory of an agent
 
 """
-import math
 import uuid
 
 from pydantic import BaseModel
 
 from simulatrex.db import SqliteDB, MemoryUnitDB
-from simulatrex.utils.logger_config import Logger
-from simulatrex.utils.time_utils import TimeUtils
+from simulatrex.utils.log import Logger
 from simulatrex.vectordb import VectorDB
 
 logger = Logger()
@@ -59,7 +57,9 @@ class ShortTermMemory:
             ids=[memory_unit.id],
         )
 
-    def retrieve_memory(self, content: str, n_results: int, current_timestamp: int):
+    def retrieve_memory(
+        self, content: str, n_results: int, current_timestamp: int, time_multiplier: int
+    ):
         query_results = self.vector_db.query_memory(content, n_results=n_results)
         metadata_entries = query_results["metadatas"][0]
         results = []
@@ -67,8 +67,14 @@ class ShortTermMemory:
         # Apply decay factor to the results based on the 'created' date
         for i, metadata in enumerate(metadata_entries):
             logger.debug(f"Metadata: {metadata}")
-            time_diff = current_timestamp - metadata["last_accessed"]
-            metadata["score"] *= math.exp(-self.decay_factor * time_diff)
+            time_diff = (
+                current_timestamp - metadata["last_accessed"]
+            ) / time_multiplier
+
+            decay = 1 / (1 + self.decay_factor * time_diff)
+            metadata["score"] *= decay
+            logger.debug(f"Score: {metadata['score']}")
+
             content = query_results["documents"][0][i]
 
             memory = MemoryUnitModel(

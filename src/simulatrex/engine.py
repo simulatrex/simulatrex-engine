@@ -16,7 +16,7 @@ from simulatrex.environment import (
 )
 from simulatrex.evaluation import EvaluationEngine
 from simulatrex.utils.json_utils import JSONHelper
-from simulatrex.utils.logger_config import Logger
+from simulatrex.utils.log import Logger
 
 
 class SimulationEngine:
@@ -105,7 +105,10 @@ class SimulationEngine:
                 for event in recent_events:
                     logger.debug(f"Event - ID: {event.id}, Content: {event.content}")
                     await agent.perceive_event(
-                        event, self.environment, self.environment.current_time
+                        event,
+                        self.environment,
+                        self.environment.current_time,
+                        self.environment.time_multiplier,
                     )
                     await agent._process_messages()
 

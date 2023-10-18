@@ -17,7 +17,7 @@ import instructor
 load_dotenv()
 
 from simulatrex.agent_utils.types import CognitiveModel
-from simulatrex.utils.logger_config import Logger
+from simulatrex.utils.log import Logger
 
 logger = Logger()
 

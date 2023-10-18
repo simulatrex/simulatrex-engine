@@ -10,7 +10,7 @@ from simulatrex.environment import BaseEnvironment
 from simulatrex.config import AgentIdentity
 from simulatrex.llm_utils.prompts import PromptManager, TemplateType
 from simulatrex.llm_utils.models import BaseLanguageModel
-from simulatrex.utils.logger_config import Logger
+from simulatrex.utils.log import Logger
 from .types import AgentMemory
 
 logger = Logger()

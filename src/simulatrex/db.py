@@ -10,7 +10,7 @@ import uuid
 from sqlalchemy import Column, String, Float, Integer, create_engine
 from sqlalchemy.orm import sessionmaker, declarative_base
 
-from simulatrex.utils.logger_config import Logger
+from simulatrex.utils.log import Logger
 
 Base = declarative_base()
 

@@ -5,9 +5,9 @@ File: event.py
 Description: Defines an event for a simulation and the event engine to manage events.
 
 """
-from typing import Any, List, Union
+from typing import List
 
-from simulatrex.utils.logger_config import Logger
+from simulatrex.utils.log import Logger
 from simulatrex.utils.time_utils import TimeUtils
 
 logger = Logger()
