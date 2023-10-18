@@ -21,11 +21,11 @@ from simulatrex.agent_utils.types import AgentType, AgentMemory, CognitiveModel
 from simulatrex.agent_utils.perceive import perceive
 from simulatrex.agent_utils.think import think
 from simulatrex.event import Event
-from simulatrex.utils.log import Logger
+from simulatrex.utils.log import SingletonLogger
 from simulatrex.llm_utils.models import OpenAILanguageModel, LlamaLanguageModel
 from simulatrex.llm_utils.prompts import PromptManager, TemplateType
 
-logger = Logger()
+_logger = SingletonLogger
 
 
 class Message:
@@ -85,7 +85,7 @@ class LLMAgent(BaseAgent):
         self.cognitive_model = None
         self.message_queue: List[Message] = []
 
-        logger.debug(
+        _logger.debug(
             f"Agent {self.id} is using cognitive model {self.cognitive_model_id}"
         )
         self._init_cognition()
@@ -108,17 +108,13 @@ class LLMAgent(BaseAgent):
         self,
         event: Event,
         environment: BaseEnvironment,
-        current_timestamp: int,
-        time_multiplier: int,
     ):
-        logger.debug(f"Agent {self.id} is processing event {event.id}")
+        _logger.debug(f"Agent {self.id} is processing event {event.id}")
         await perceive(
             self.cognitive_model,
             self.memory,
             self.identity,
             environment,
-            current_timestamp,
-            time_multiplier,
             event,
         )
 
@@ -129,7 +125,7 @@ class LLMAgent(BaseAgent):
     async def evaluate_outputs(
         self, environment: BaseEnvironment, objective: Objective
     ):
-        logger.debug(f"Agent {self.id} is evaluating outputs")
+        _logger.debug(f"Agent {self.id} is evaluating outputs")
         # Based on agent memory and environment, evaluate outputs
         prompt = PromptManager().get_filled_template(
             TemplateType.AGENT_EVALUATION,
@@ -173,7 +169,7 @@ class LLMAgent(BaseAgent):
         self, environment: BaseEnvironment
     ) -> AgentConverseResponseModel:
         # Use the cognitive model to decide when to send a message
-        logger.debug(f"Agent {self.id} is deciding whether to send a message")
+        _logger.debug(f"Agent {self.id} is deciding whether to send a message")
 
         last_thoughts = self.memory.long_term_memory.query_memory_by_type(
             "thought", n_results=3
@@ -185,11 +181,11 @@ class LLMAgent(BaseAgent):
 
         agent_relationships = []
         for relationship in self.relationships:
-            logger.debug(relationship.summary())
+            _logger.debug(relationship.summary())
             agent_relationships.append(relationship.summary())
 
         if agent_relationships:
-            logger.info(f"Relationships found for the agent: {agent_relationships}")
+            _logger.info(f"Relationships found for the agent: {agent_relationships}")
             prompt = PromptManager().get_filled_template(
                 TemplateType.AGENT_DECIDE_ON_CONVERSATION,
                 agent_name=self.identity.name,
@@ -203,14 +199,14 @@ class LLMAgent(BaseAgent):
             )
 
             if response.should_converse:
-                logger.info(f"Agent {self.id} decided to start a conversation")
+                _logger.info(f"Agent {self.id} decided to start a conversation")
             else:
-                logger.info(f"Agent {self.id} decided not to start a conversation")
+                _logger.info(f"Agent {self.id} decided not to start a conversation")
 
             return response
 
         else:
-            logger.info(f"No relationships found for the agent")
+            _logger.info(f"No relationships found for the agent")
             return self.AgentConverseResponseModel(
                 should_converse=False, receiver_ids=[]
             )

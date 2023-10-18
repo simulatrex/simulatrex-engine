@@ -16,11 +16,13 @@ from simulatrex.environment import (
 )
 from simulatrex.evaluation import EvaluationEngine
 from simulatrex.utils.json_utils import JSONHelper
-from simulatrex.utils.log import Logger
+from simulatrex.utils.log import SingletonLogger
+
+_logger = SingletonLogger
 
 
 class SimulationEngine:
-    def __init__(self, config_path, num_iterations=None):
+    def __init__(self, config_path: str):
         json_data = JSONHelper.read_json(config_path)
         self.config = Config(**json_data)
         self.title = self.config.simulation.title
@@ -77,13 +79,6 @@ class SimulationEngine:
             raise ValueError(f"Unsupported environment type: {enviroment_type}")
 
     async def run(self):
-        # Append the title to the logfiles to distinguish between different simulations
-        logger = Logger(
-            name=self.title,
-            log_file=f"{self.title}_run.log",
-            response_log_file=f"{self.title}_agents_response.log",
-        )
-
         while True:
             # Check stopping time
             if not self.environment.is_running():
@@ -93,7 +88,7 @@ class SimulationEngine:
             recent_events, current_env_context = await self.environment.update()
 
             # Log the current env context
-            logger.debug(f"Current environment context: {current_env_context}")
+            _logger.debug(f"Current environment context: {current_env_context}")
 
             # Let the agents process the recent events
             for agent in self.agents:
@@ -103,26 +98,24 @@ class SimulationEngine:
 
                 # Agent perceives the recent events
                 for event in recent_events:
-                    logger.debug(f"Event - ID: {event.id}, Content: {event.content}")
+                    _logger.debug(f"Event - ID: {event.id}, Content: {event.content}")
                     await agent.perceive_event(
                         event,
                         self.environment,
-                        self.environment.current_time,
-                        self.environment.time_multiplier,
                     )
                     await agent._process_messages()
 
             # Log the current iteration
-            logger.info(
+            _logger.info(
                 f"Simulation Iteration {self.current_iteration} of {self.total_iterations}: Processed recent events."
             )
 
             self.current_iteration += 1
 
         # Evaluate the simulation
-        logger.info("Simulation finished. Evaluating results...")
+        _logger.info("Simulation finished. Evaluating results...")
         evaluation_engine = EvaluationEngine(self.config.simulation.evaluation)
         simulation_results = await evaluation_engine.evaluate_agents_outputs(
             self.agents, self.environment
         )
-        logger.info(f"Simulation results: {simulation_results}")
+        _logger.info(f"Simulation results: {simulation_results}")

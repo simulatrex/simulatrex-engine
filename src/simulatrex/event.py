@@ -7,10 +7,10 @@ Description: Defines an event for a simulation and the event engine to manage ev
 """
 from typing import List
 
-from simulatrex.utils.log import Logger
+from simulatrex.utils.log import SingletonLogger
 from simulatrex.utils.time_utils import TimeUtils
 
-logger = Logger()
+_logger = SingletonLogger
 
 
 class Event:
@@ -72,7 +72,7 @@ class EventEngine:
         self.init_events()
         for event in self.events:
             if self._should_trigger(event, previous_time, current_time):
-                logger.debug(f"Event triggered: {event.id}")
+                _logger.debug(f"Event triggered: #{event.id} - {event.content}")
                 self.active_events.append(event)
                 event.is_triggered = True
             else:

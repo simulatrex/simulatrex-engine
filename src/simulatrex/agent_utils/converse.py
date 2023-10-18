@@ -9,10 +9,10 @@ from simulatrex.environment import BaseEnvironment
 from simulatrex.config import AgentIdentity
 from simulatrex.llm_utils.prompts import PromptManager, TemplateType
 from simulatrex.llm_utils.models import BaseLanguageModel
-from simulatrex.utils.log import Logger
+from simulatrex.utils.log import SingletonLogger
 from .types import AgentMemory
 
-logger = Logger()
+_logger = SingletonLogger
 
 
 async def converse(
@@ -45,6 +45,6 @@ async def converse(
 
     response = await cognitive_model.ask(prompt)
 
-    logger.debug(response)
+    _logger.debug(response)
 
     return response

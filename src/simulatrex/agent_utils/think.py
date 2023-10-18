@@ -10,10 +10,10 @@ from simulatrex.environment import BaseEnvironment
 from simulatrex.config import AgentIdentity
 from simulatrex.llm_utils.prompts import PromptManager, TemplateType
 from simulatrex.llm_utils.models import BaseLanguageModel
-from simulatrex.utils.log import Logger
+from simulatrex.utils.log import SingletonLogger
 from .types import AgentMemory
 
-logger = Logger()
+_logger = SingletonLogger
 
 
 async def think(
@@ -41,10 +41,14 @@ async def think(
 
     response = await cognitive_model.generate_structured_output(prompt, MemoryUnitModel)
 
-    logger.debug(f"Agent {identity.name} thought: {response}")
+    _logger.debug(f"Agent {identity.name} thought: {response}")
 
-    _memory = MemoryUnitModel(**response.dict())
+    _memory = MemoryUnitModel(
+        **response.dict(),
+        created=environment.get_current_time(),
+        last_accessed=environment.get_current_time(),
+    )
     memory.short_term_memory.add_memory(_memory)
     memory.long_term_memory.add_memory(_memory)
 
-    logger.debug(f"Current thought: {response.content}")
+    _logger.debug(f"Current thought: {response.content}")

@@ -13,9 +13,9 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-from simulatrex.utils.log import Logger
+from simulatrex.utils.log import SingletonLogger
 
-logger = Logger()
+_logger = SingletonLogger
 
 
 class VectorDB:
@@ -55,7 +55,7 @@ class VectorDB:
             )
 
         except Exception as e:
-            logger.error(e)
+            _logger.error(e)
             raise Exception("Failed to initialize ChromaDB collection.")
 
     def add_memory(self, content: str, metadatas=None, ids=None):

@@ -10,11 +10,11 @@ import uuid
 from sqlalchemy import Column, String, Float, Integer, create_engine
 from sqlalchemy.orm import sessionmaker, declarative_base
 
-from simulatrex.utils.log import Logger
+from simulatrex.utils.log import SingletonLogger
 
 Base = declarative_base()
 
-logger = Logger()
+_logger = SingletonLogger
 
 
 class MemoryUnitDB(Base):
@@ -54,6 +54,5 @@ class SqliteDB:
         )
 
     def insert_memory(self, memory: MemoryUnitDB):
-        print(memory.__dict__.keys())
         self.session.add(memory)
         self.session.commit()

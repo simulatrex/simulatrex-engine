@@ -5,15 +5,16 @@ File: memory.py
 Description: Defines the memory class, which is used to define the memory of an agent
 
 """
+from datetime import timedelta
 import uuid
 
 from pydantic import BaseModel
 
 from simulatrex.db import SqliteDB, MemoryUnitDB
-from simulatrex.utils.log import Logger
+from simulatrex.utils.log import SingletonLogger
 from simulatrex.vectordb import VectorDB
 
-logger = Logger()
+_logger = SingletonLogger
 
 
 class MemoryUnitModel(BaseModel):
@@ -21,11 +22,11 @@ class MemoryUnitModel(BaseModel):
     depth: float
     content: str
     keywords: str
-
     id: str
+
+    score: float = 0.0
     created: int = 0
     last_accessed: int = 0
-    score: float = 0.0
 
     def __init__(self, **data):
         super().__init__(**data)
@@ -50,7 +51,7 @@ class ShortTermMemory:
         self.decay_factor = decay_factor
 
     def add_memory(self, memory_unit: MemoryUnitModel):
-        logger.debug(f"Adding STM memory with id {memory_unit.id}")
+        _logger.debug(f"Adding STM memory with id {memory_unit.id}")
         self.vector_db.add_memory(
             memory_unit.content,
             metadatas=[memory_unit.get_metadata()],
@@ -66,14 +67,14 @@ class ShortTermMemory:
 
         # Apply decay factor to the results based on the 'created' date
         for i, metadata in enumerate(metadata_entries):
-            logger.debug(f"Metadata: {metadata}")
+            _logger.debug(f"Metadata: {metadata}")
             time_diff = (
                 current_timestamp - metadata["last_accessed"]
             ) / time_multiplier
 
             decay = 1 / (1 + self.decay_factor * time_diff)
             metadata["score"] *= decay
-            logger.debug(f"Score: {metadata['score']}")
+            _logger.debug(f"Score: {metadata['score']}")
 
             content = query_results["documents"][0][i]
 
@@ -99,7 +100,7 @@ class LongTermMemory:
 
     def add_memory(self, memory_unit: MemoryUnitModel):
         memory_unit_db = MemoryUnitDB(**memory_unit.model_dump())
-        logger.debug(f"Adding LTM memory with id {memory_unit_db.id}")
+        _logger.debug(f"Adding LTM memory with id {memory_unit_db.id}")
         self.db.insert_memory(memory_unit_db)
 
     def query_memory_by_type(self, type: str, n_results: int = 5):
