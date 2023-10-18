@@ -9,11 +9,11 @@ from simulatrex.environment import BaseEnvironment
 from simulatrex.config import AgentIdentity
 from simulatrex.llm_utils.prompts import PromptManager, TemplateType
 from simulatrex.llm_utils.models import BaseLanguageModel
-from simulatrex.utils.logger_config import Logger
+from simulatrex.utils.log import SingletonLogger
 from simulatrex.event import Event
 from .types import AgentMemory
 
-logger = Logger()
+_logger = SingletonLogger
 
 
 async def perceive(
@@ -27,10 +27,12 @@ async def perceive(
     Perceive the current event and what is happening
     """
     recent_memories = memory.short_term_memory.retrieve_memory(
-        event.content, n_results=5
+        event.content,
+        n_results=5,
+        current_timestamp=environment.get_current_time(),
+        time_multiplier=environment.time_multiplier,
     )
-
-    logger.debug("Recent memories: %s", recent_memories)
+    recent_memories_content = [memory.content for memory in recent_memories]
 
     # Based on event content make a decision and request model
     prompt = PromptManager().get_filled_template(
@@ -42,7 +44,7 @@ async def perceive(
         ethnicity=identity.ethnicity,
         language=identity.language,
         core_memories=", ".join(identity.core_memories),
-        recent_memories=", ".join(recent_memories),
+        recent_memories=", ".join(recent_memories_content),
         environment_description=environment.description,
         environment_context=environment.context,
         environment_entities=", ".join(environment.entities),
@@ -51,6 +53,6 @@ async def perceive(
 
     response = await cognitive_model.ask(prompt)
 
-    logger.debug(response)
+    _logger.debug(response)
 
     return response

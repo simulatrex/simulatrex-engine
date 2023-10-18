@@ -4,6 +4,6 @@ Please structure the thought as a "MemoryUnit" with the following details:
 - type: "thought" as string
 - depth: a float between 0 and 1
 - content: a string 
-- keywords: (Key takeaways from the thought) as list of strings
+- keywords: (Key takeaways from the thought) as comma seperated string
 
-Remember to factor in the current context, environment details, and the agent's recent memories when generating this thought.
+Remember to factor in the current context, environment details, and the agent's recent memories when generating this thought. Write in the first person form.

@@ -6,15 +6,16 @@ Description: Defines the vectordb class, which is a wrapper around ChromaDB
 
 """
 import os
+import shutil
 import chromadb
 from chromadb.utils import embedding_functions
 from dotenv import load_dotenv
 
 load_dotenv()
 
-from simulatrex.utils.logger_config import Logger
+from simulatrex.utils.log import SingletonLogger
 
-logger = Logger()
+_logger = SingletonLogger
 
 
 class VectorDB:
@@ -44,6 +45,7 @@ class VectorDB:
 
             current_dir = os.path.dirname(os.path.abspath(__file__))
             chroma_db_path = os.path.join(current_dir, "chromadb")
+
             self.client = chromadb.PersistentClient(path=chroma_db_path)
 
             self.collection = self.client.create_collection(
@@ -53,7 +55,7 @@ class VectorDB:
             )
 
         except Exception as e:
-            logger.error(e)
+            _logger.error(e)
             raise Exception("Failed to initialize ChromaDB collection.")
 
     def add_memory(self, content: str, metadatas=None, ids=None):
@@ -69,7 +71,7 @@ class VectorDB:
         self.collection.add(
             documents=[content],
             metadatas=metadatas or [{}],  # Empty metadata if not provided
-            ids=ids or [f"doc.1"],  # Default ID generation if not provided
+            ids=ids,
         )
 
     def query_memory(

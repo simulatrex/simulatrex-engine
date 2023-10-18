@@ -26,7 +26,10 @@ class Objective:
 class EvaluationEngine:
     def __init__(self, evaluation: Evaluation):
         self.metrics = evaluation.metrics
-        self.objectives = [Objective(**obj) for obj in evaluation.objectives]
+        self.objectives = [
+            Objective(obj.id, obj.description, obj.metric, obj.target)
+            for obj in evaluation.objectives
+        ]
 
         self.llm = OpenAILanguageModel(model_id=CognitiveModel.GPT_4)
         self.prompt_manager = PromptManager()

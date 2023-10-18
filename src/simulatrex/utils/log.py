@@ -14,43 +14,43 @@ from termcolor import colored
 class Logger:
     def __init__(
         self,
-        name="simulatrex-agents",
-        log_file="run.log",
-        response_log_file="response.log",
+        name="simulatrex::simulation",
+        log_file="simulatrex_logs.log",
+        agent_log_file="simulatrex_agent_logs.log",
     ):
         # Create logger
         self.logger = logging.getLogger(name)
         self.agent_logger = logging.getLogger("agent_logger")
+
         if not self.logger.handlers:  # Check if logger already has handlers
             self.logger.setLevel(logging.DEBUG)  # Set default logging level
-
-            # Create console handler and set level to debug
-            ch = logging.StreamHandler()
-            ch.setLevel(logging.DEBUG)
-
-            # Create file handler and set level to debug
-            fh = logging.FileHandler(log_file)
-            fh.setLevel(logging.DEBUG)
-
-            # Create file handler for response log
-            rh = logging.FileHandler(response_log_file)
-            rh.setLevel(logging.INFO)
 
             # Create formatter
             formatter = logging.Formatter(
                 "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
             )
 
-            # Add formatter to handlers
+            # Create console handler and set level to debug
+            ch = logging.StreamHandler()
+            ch.setLevel(logging.DEBUG)
             ch.setFormatter(formatter)
-            fh.setFormatter(formatter)
-            rh.setFormatter(formatter)
-
-            # Add handlers to logger
             self.logger.addHandler(ch)
-            self.logger.addHandler(fh)
 
-            self.agent_logger.addHandler(rh)
+            # Create file handler and set level to debug
+            if log_file is not None:
+                fh = logging.FileHandler(log_file)
+                fh.setLevel(logging.DEBUG)
+                fh.setFormatter(formatter)
+                self.logger.addHandler(fh)
+
+        if not self.agent_logger.handlers:  # Check if logger already has handlers
+            self.agent_logger.setLevel(logging.INFO)
+            # Create file handler for agent response log
+            if agent_log_file is not None:
+                rh = logging.FileHandler(agent_log_file)
+                rh.setLevel(logging.INFO)
+                rh.setFormatter(formatter)
+                self.agent_logger.addHandler(rh)
 
     def debug(self, msg):
         self.logger.debug(colored(msg, "blue"))
@@ -65,5 +65,7 @@ class Logger:
         self.logger.error(colored(msg, "red"))
 
     def log_agent_response(self, agent_id: str, response: str):
-        response_dict = {"agent_id": agent_id, "response": response}
-        self.agent_logger.info(json.dumps(response_dict), extra={"handler": "rh"})
+        self.agent_logger.info(f"{agent_id} - {response}")
+
+
+SingletonLogger = Logger()

@@ -6,6 +6,8 @@ Description: LLM Models
 
 """
 import os
+import json
+from abc import ABC, abstractmethod
 
 from dotenv import load_dotenv
 from pydantic import BaseModel
@@ -16,19 +18,21 @@ import instructor
 load_dotenv()
 
 from simulatrex.agent_utils.types import CognitiveModel
-from simulatrex.utils.logger_config import Logger
+from simulatrex.utils.log import SingletonLogger
 
-logger = Logger()
+_logger = SingletonLogger
 
 DEFAULT_SYSTEM_PROMPT = "This is a real-world like simulation. Try to answer the following questions as best as possible:"
 
 
-class BaseLanguageModel:
+class BaseLanguageModel(ABC):
+    @abstractmethod
     async def ask(
         self, prompt: str, context_prompt=DEFAULT_SYSTEM_PROMPT, temperature=0.9
     ) -> str:
         pass
 
+    @abstractmethod
     async def generate_structured_output(
         self,
         prompt: str,
@@ -76,11 +80,11 @@ class OpenAILanguageModel(BaseLanguageModel):
 
             # Log the response
             if self.agent_id:
-                logger.log_agent_response(self.agent_id, response_message)
+                _logger.log_agent_response(self.agent_id, response_message)
 
             return response_message
         except Exception as e:
-            logger.debug(f"Error: {e}")
+            _logger.debug(f"Error: {e}")
 
             raise Exception("Error in OpenAI API call")
 
@@ -102,9 +106,16 @@ class OpenAILanguageModel(BaseLanguageModel):
                 max_retries=2,
                 temperature=temperature,
             )
+
+            # Log the response
+            if self.agent_id:
+                # Convert the structured response to a readable string
+                response_string = json.dumps(structured_response, indent=4, default=str)
+                _logger.log_agent_response(self.agent_id, response_string)
+
             return structured_response
         except Exception as e:
-            logger.debug(f"Error: {e}")
+            _logger.debug(f"Error: {e}")
 
             raise Exception("Error in OpenAI API call")
 
@@ -152,10 +163,10 @@ class LlamaLanguageModel(BaseLanguageModel):
 
                 # Log the response
                 if self.agent_id:
-                    logger.log_agent_response(self.agent_id, result_text)
+                    _logger.log_agent_response(self.agent_id, result_text)
 
                 return result_text
             except Exception as e:
-                logger.debug(f"Error: {e}")
+                _logger.debug(f"Error: {e}")
 
                 raise Exception("Error in HuggingFace API call")

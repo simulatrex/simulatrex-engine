@@ -51,6 +51,9 @@ class AgentRelationship(BaseModel):
     strength: float  # E.g., from 0 (acquaintance) to 1 (best friend)
     metadata: Optional[Dict[str, Union[str, int, float]]]
 
+    def summary(self) -> str:
+        return f"{self.type} {self.agent_id} with strength {self.strength}"
+
 
 class AgentGroup(BaseModel):
     id: str
