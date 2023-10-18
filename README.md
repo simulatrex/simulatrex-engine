@@ -1,13 +1,31 @@
-# Simulatrex
-
-Full description and examples can be found here: https://dominikscherm.substack.com/p/introducing-simulatrex.
+<h1 align="center">
+        Simulatrex 🪄 
+    </h1>
+    <p align="center">
+        <p align="center">Large Language Model (LLM) based simulation framework designed to run market research and social science simulations involving multi-agent structures and hierarchies
+        <br>
+        <br>
+        <a href="https://cal.com/d42me/30min">Schedule Demo</a>
+        ·
+        <a href="https://github.com/simulatrex/simulatrex/issues/new?assignees=&labels=enhancement&projects=&title=%5BFeature%5D%3A+">Feature Request</a>
+    </p>
+<h4 align="center">
+    <a href="https://pypi.org/project/simulatrex" target="_blank">
+        <img src="https://img.shields.io/pypi/v/simulatrex.svg" alt="PyPI Version">
+    </a>
+    <a href="https://dominikscherm.substack.com/p/introducing-simulatrex">
+        <img src="https://img.shields.io/badge/Documentation-Substack-orange
+" alt="Substack documentation">
+    </a>
+    <a href="https://discord.gg/THG27uRm">
+        <img src="https://img.shields.io/static/v1?label=Chat%20on&message=Discord&color=blue&logo=Discord&style=flat-square" alt="Discord">
+    </a>
+</h4>
 
 <div align="center">
 <img src="cover.png" alt="Simulatrex" width="300"/>
 </div>
 <br/>
-
-Simulatrex is a Large Language Model (LLM) based simulation framework designed to run social science simulations involving multi-agent structures and hierarchies. It provides a robust and flexible platform for creating and running complex simulations, making it an ideal tool for researchers and developers in the field of social sciences, artificial intelligence, and more.
 
 ## Features
 
@@ -46,3 +64,45 @@ if __name__ == "__main__":
 ```
 
 In this example, we're creating a new SimulationEngine with a configuration file and then running the simulation.
+
+## Contributing
+To contribute: Clone the repo locally -> Make a change -> Submit a PR with the change. 
+
+Here's how to modify the repo locally: 
+Step 1: Clone the repo 
+```
+git clone https://github.com/simulatrex/simulatrex
+```
+
+Step 2: Navigate into the project, setup a new virtual env (recommended) and install dependencies: 
+```
+cd simulatrex
+python -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+```
+
+Step 3: Submit a PR with your changes! 🚀
+- push your fork to your GitHub repo
+- submit a PR from there 
+
+# Support / talk with founders
+- [Schedule Demo 👋](https://github.com/simulatrex/simulatrex)
+- [Community Discord 💭](https://discord.gg/THG27uRm)
+- Email ✉️ dom@simulatrex.com
+
+# Why did we build this 
+With Simulatrex we want to make rapid market simulations accessible to every professional out in the world. We aim for:
+
+- Accessibility
+
+    We allow everyone to run simulations, fast. That means the setup should be simple, intuitive, and explainable. As outlined social simulations following complex environments are currently hard to conduct. It takes days to outline the starting conditions. By fine-tuning our own models, we want to rapidly decrease the setup time.
+
+- Performance
+
+    By paralleling processes we aim for the maximum speed so that simulations take hours instead of days or weeks.
+
+
+- Dynamic without limits
+
+    Our world is constantly changing, so it’s a preliminary requirement for a social simulation framework to model dynamic environments. Simulatrex allows that by introducing a novel event engine, that releases an event at a certain time or follows natural language-described triggers.
