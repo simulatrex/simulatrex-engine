@@ -14,8 +14,7 @@
         <img src="https://img.shields.io/pypi/v/simulatrex.svg" alt="PyPI Version">
     </a>
     <a href="https://dominikscherm.substack.com/p/introducing-simulatrex">
-        <img src="https://img.shields.io/badge/Documentation-Substack-orange
-" alt="Substack documentation">
+        <img src="https://img.shields.io/badge/Documentation-Substack-orange" alt="Substack documentation">
     </a>
     <a href="https://discord.gg/THG27uRm">
         <img src="https://img.shields.io/static/v1?label=Chat%20on&message=Discord&color=blue&logo=Discord&style=flat-square" alt="Discord">
@@ -87,7 +86,7 @@ Step 3: Submit a PR with your changes! 🚀
 - submit a PR from there 
 
 # Support / talk with founders
-- [Schedule Demo 👋](https://github.com/simulatrex/simulatrex)
+- [Schedule Demo 👋](https://cal.com/d42me/30min)
 - [Community Discord 💭](https://discord.gg/THG27uRm)
 - Email ✉️ dom@simulatrex.com
 
