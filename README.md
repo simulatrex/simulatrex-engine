@@ -64,6 +64,32 @@ if __name__ == "__main__":
 
 In this example, we're creating a new SimulationEngine with a configuration file and then running the simulation.
 
+## Simulation Examples
+
+Simulatrex can be used for a variety of simulations. Here are a few examples:
+
+### 1. Consumer Price Simulation
+
+Simulate the impact of price changes on consumer behavior. This can help businesses understand how consumers might react to price increases or decreases, and make informed decisions about pricing strategies.
+
+**Possible outcome**: 4 out of 10 agents stated that the price is too high.
+
+### 2. Product Launch Simulation
+
+Simulate the market response to a new product launch. By modeling different consumer personas and their potential reactions, businesses can get a sense of how a new product might be received and plan their marketing strategies accordingly.
+
+**Possible outcome**: 7 out of 10 agents stated a positive buying intention.
+
+### 3. Market Trend Simulation
+
+Simulate broader market trends. This can help businesses anticipate changes in the market, identify opportunities for growth, and stay ahead of the competition.
+
+**Possible outcome**: 6 out of 10 agents predicted a rising trend in the tech market due to increased interest in AI technologies.
+
+---
+
+Each simulation can be configured with specific metrics and targets. For example, in a product launch simulation, you might set the metric to "Buying intention among personas".
+
 ## Contributing
 To contribute: Clone the repo locally -> Make a change -> Submit a PR with the change. 
 
