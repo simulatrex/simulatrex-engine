@@ -51,7 +51,7 @@ export default function OnboardingLayout({ children }: OnboardingLayoutProps) {
         )}
       </Menu>
 
-      <div className="absolute left-6 top-6">
+      <div className="absolute top-6 left-6">
         <img
           className="w-auto h-12"
           src="/assets/logo.png"

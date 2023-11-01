@@ -2,7 +2,7 @@ import SignupForm from "@/components/Auth/SignupForm";
 import OnboardingLayout from "@/layouts/OnboardingLayout";
 import RootLayout from "@/layouts/RootLayout";
 
-export default function Signup() {
+export default function Signin() {
   return (
     <RootLayout>
       <OnboardingLayout>

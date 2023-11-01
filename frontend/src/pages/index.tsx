@@ -1,8 +1,7 @@
-import OnboardingLayout from "@/layouts/OnboardingLayout";
-import RootLayout from "@/layouts/RootLayout";
-
 import PrimaryButton from "@/components/PrimaryButton";
 import Sidebar from "@/components/Sidebar";
+import OnboardingLayout from "@/layouts/OnboardingLayout";
+import RootLayout from "@/layouts/RootLayout";
 
 export default function Start() {
   return (
@@ -22,13 +21,13 @@ export default function Start() {
                 Sign up to run your simulation.
               </p>
 
-              <PrimaryButton href="/auth/signup">Start</PrimaryButton>
+              <PrimaryButton href="/auth/signin">Start</PrimaryButton>
             </div>
 
             {/* Progress */}
             <div className="absolute right-4 bottom-4">
               <div className="relative w-16 h-16 bg-white rounded-full">
-                <p className="absolute inset-0 flex justify-center items-center text-primary text-blue-600">
+                <p className="absolute inset-0 flex justify-center items-center text-primary">
                   60%
                 </p>
               </div>
