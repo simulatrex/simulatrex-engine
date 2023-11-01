@@ -1,4 +1,4 @@
-import PrimaryButton from "@/components/PrimaryButton";
+import SignupForm from "@/components/Auth/SignupForm";
 import OnboardingLayout from "@/layouts/OnboardingLayout";
 import RootLayout from "@/layouts/RootLayout";
 
@@ -6,27 +6,18 @@ export default function Signup() {
   return (
     <RootLayout>
       <OnboardingLayout>
-        <div className="relative w-[80vw] h-[90vh] flex flex-col justify-center px-20 bg-no-repeat bg-center bg-cover bg-start rounded-lg">
-          {/* Content */}
-          <div className="justfiy-start flex flex-col">
-            <h1 className="mb-4 text-8xl text-white">
-              Welcome to
-              <br />
-              Simulatrex
-            </h1>
-            <p className="mb-8 text-xl text-white">
-              Sign up to run your simulation.
-            </p>
-
-            <PrimaryButton href="/onboarding">Start</PrimaryButton>
+        <div className="w-full flex flex-row px-20">
+          <div className="w-1/2 flex flex-col justify-center items-start">
+            <SignupForm />
           </div>
-
-          {/* Progress */}
-          <div className="absolute right-4 bottom-4">
-            <div className="relative w-16 h-16 bg-white rounded-full">
-              <p className="absolute inset-0 flex justify-center items-center text-primary text-blue-600">
-                60%
-              </p>
+          <div className="relative w-1/2 h-[90vh] flex flex-col justify-center bg-no-repeat bg-right bg-cover bg-start rounded-lg">
+            {/* Progress */}
+            <div className="absolute right-4 bottom-4">
+              <div className="relative w-16 h-16 bg-white rounded-full">
+                <p className="absolute inset-0 flex justify-center items-center text-primary">
+                  60%
+                </p>
+              </div>
             </div>
           </div>
         </div>

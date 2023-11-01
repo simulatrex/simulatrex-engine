@@ -12,7 +12,7 @@ export default function OnboardingLayout({ children }: OnboardingLayoutProps) {
   return (
     <>
       {/* Menu */}
-      <Menu as="div" className="absolute top-4 right-4">
+      <Menu as="div" className="absolute top-6 right-6">
         {({ open }) => (
           <Fragment>
             <Menu.Button className="p-2 text-white bg-black rounded-md">
@@ -51,7 +51,15 @@ export default function OnboardingLayout({ children }: OnboardingLayoutProps) {
         )}
       </Menu>
 
-      <main className="py-10 lg:pl-72">{children}</main>
+      <div className="absolute left-6 top-6">
+        <img
+          className="w-auto h-12"
+          src="/assets/logo.png"
+          alt="Simulatrex Logo"
+        />
+      </div>
+
+      <main className="py-10">{children}</main>
     </>
   );
 }
