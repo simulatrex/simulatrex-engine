@@ -2,8 +2,7 @@ import PrimaryButton from "@/components/PrimaryButton";
 import OnboardingLayout from "@/layouts/OnboardingLayout";
 import RootLayout from "@/layouts/RootLayout";
 
-
-export default function Start() {
+export default function Signup() {
   return (
     <RootLayout>
       <OnboardingLayout>
@@ -19,7 +18,7 @@ export default function Start() {
               Sign up to run your simulation.
             </p>
 
-            <PrimaryButton href="/auth/signup">Start</PrimaryButton>
+            <PrimaryButton href="/onboarding">Start</PrimaryButton>
           </div>
 
           {/* Progress */}
