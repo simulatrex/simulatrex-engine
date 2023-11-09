@@ -18,11 +18,18 @@
         "time_multiplier": 86400
       }
     },
+    "targetGroups": [
+      {
+        "id": "1",
+        "sampling_size": 200,
+        "attributes": {}
+      }
+    ],
     "agents": [
       {
         "id": "1",
         "type": "LLM_AGENT",
-        "cognitive_model": "gpt-4",
+        "cognitive_model": "gpt-4-1106-preview",
         "identity": {
           "name": "Emily",
           "age": 22,
@@ -92,7 +99,7 @@
       {
         "id": "2",
         "type": "LLM_AGENT",
-        "cognitive_model": "gpt-4",
+        "cognitive_model": "gpt-4-1106-preview",
         "identity": {
           "name": "John",
           "age": 28,
@@ -157,7 +164,7 @@
       {
         "id": "3",
         "type": "LLM_AGENT",
-        "cognitive_model": "gpt-4",
+        "cognitive_model": "gpt-4-1106-preview",
         "identity": {
           "name": "Sarah",
           "age": 30,
@@ -224,7 +231,7 @@
       {
         "id": "4",
         "type": "LLM_AGENT",
-        "cognitive_model": "gpt-4",
+        "cognitive_model": "gpt-4-1106-preview",
         "identity": {
           "name": "Robert",
           "age": 45,

@@ -91,7 +91,11 @@ class LLMAgent(BaseAgent):
         self._init_cognition()
 
     def _init_cognition(self):
-        if self.cognitive_model_id == CognitiveModel.GPT_4.value:
+        if self.cognitive_model_id == CognitiveModel.GPT_4_TURBO.value:
+            self.cognitive_model = OpenAILanguageModel(
+                model_id=CognitiveModel.GPT_4_TURBO, agent_id=self.id
+            )
+        elif self.cognitive_model_id == CognitiveModel.GPT_4.value:
             self.cognitive_model = OpenAILanguageModel(
                 model_id=CognitiveModel.GPT_4, agent_id=self.id
             )
