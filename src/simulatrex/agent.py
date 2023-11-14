@@ -65,7 +65,7 @@ class BaseAgent:
         self.memory = AgentMemory(
             self.id,
             decay_factor=initial_conditions["decay_factor"]
-            if "decay_factor" in initial_conditions
+            if initial_conditions and "decay_factor" in initial_conditions
             else 0.995,
         )
 

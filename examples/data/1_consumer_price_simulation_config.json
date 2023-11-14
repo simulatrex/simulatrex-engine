@@ -18,13 +18,6 @@
         "time_multiplier": 86400
       }
     },
-    "targetGroups": [
-      {
-        "id": "1",
-        "sampling_size": 200,
-        "attributes": {}
-      }
-    ],
     "agents": [
       {
         "id": "1",

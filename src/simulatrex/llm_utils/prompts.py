@@ -11,6 +11,7 @@ import os
 
 
 class TemplateType(Enum):
+    AGENT_IDENTITY_SPAWN = "agent_identity_spawn.txt"
     AGENT_PERCEPTION = "agent_perception.txt"
     AGENT_CONVERSE = "agent_converse.txt"
     AGENT_THINK = "agent_think.txt"
