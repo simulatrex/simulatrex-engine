@@ -6,7 +6,11 @@
       "type": "DYNAMIC",
       "context": "Urban community with a diverse population",
       "description": "A community comprising residents from various backgrounds, local businesses, and government institutions. The community is marked by regular events, public meetings, and interactions among its members.",
-      "entities": ["Residents", "Local Businesses", "Government Institutions"],
+      "entities": [
+        "Residents",
+        "Local Businesses",
+        "Government Institutions"
+      ],
       "time_config": {
         "start_time": "2023-06-01T00:00:00",
         "end_time": "2023-12-31T23:59:59",
@@ -17,7 +21,7 @@
       {
         "id": "1",
         "type": "LLM_AGENT",
-        "cognitive_model": "gpt-4",
+        "cognitive_model": "gpt-4-1106-preview",
         "identity": {
           "name": "Alice",
           "age": 35,
@@ -26,35 +30,55 @@
           "language": "English",
           "persona": "Local Resident",
           "personality_description": "Community organizer who frequently collaborates with local government.",
-          "traits": ["Engaged", "Proactive", "Community-focused"],
-          "interests": ["Community events", "Public welfare", "Education"],
+          "traits": [
+            "Engaged",
+            "Proactive",
+            "Community-focused"
+          ],
+          "interests": [
+            "Community events",
+            "Public welfare",
+            "Education"
+          ],
           "knowledge_base": [
             "Local bylaws",
             "Community history",
             "Public services"
           ],
-          "skills": ["Communication", "Organization"],
-          "behavior_patterns": ["Attends community events", "Volunteers"],
+          "skills": [
+            "Communication",
+            "Organization"
+          ],
+          "behavior_patterns": [
+            "Attends community events",
+            "Volunteers"
+          ],
           "past_experiences": [
             "Organized community fairs",
             "Led resident meetings"
           ],
           "societal_role": "Community Organizer",
-          "affiliations": ["Local Residents' Association"],
+          "affiliations": [
+            "Local Residents' Association"
+          ],
           "current_state": "Community Organizer",
           "core_memories": [
             "Organized community fairs",
             "Led resident meetings"
           ]
         },
-        "initial_conditions": { "awareness": 0.9 },
+        "initial_conditions": {
+          "awareness": 0.9
+        },
         "relationships": [],
-        "group_affiliations": ["G1"]
+        "group_affiliations": [
+          "G1"
+        ]
       },
       {
         "id": "2",
         "type": "LLM_AGENT",
-        "cognitive_model": "gpt-4",
+        "cognitive_model": "gpt-4-1106-preview",
         "identity": {
           "name": "Downtown Deli",
           "age": 10,
@@ -63,32 +87,47 @@
           "language": "English",
           "persona": "Local Business",
           "personality_description": "A popular eatery that actively engages with community initiatives.",
-          "traits": ["Customer-focused", "Community-minded"],
-          "interests": ["Local events", "Sustainable business"],
+          "traits": [
+            "Customer-focused",
+            "Community-minded"
+          ],
+          "interests": [
+            "Local events",
+            "Sustainable business"
+          ],
           "knowledge_base": [
             "Local clientele",
             "Business regulations",
             "Supply chains"
           ],
-          "skills": ["Catering", "Event hosting"],
+          "skills": [
+            "Catering",
+            "Event hosting"
+          ],
           "behavior_patterns": [],
           "past_experiences": [
             "Hosted community events",
             "Supported local causes"
           ],
           "societal_role": "Local Business Owner",
-          "affiliations": ["Local Business Association"],
+          "affiliations": [
+            "Local Business Association"
+          ],
           "current_state": "Local Business Owner",
           "core_memories": []
         },
-        "initial_conditions": { "awareness": 0.7 },
+        "initial_conditions": {
+          "awareness": 0.7
+        },
         "relationships": [],
-        "group_affiliations": ["G2"]
+        "group_affiliations": [
+          "G2"
+        ]
       },
       {
         "id": "3",
         "type": "LLM_AGENT",
-        "cognitive_model": "gpt-4",
+        "cognitive_model": "gpt-4-1106-preview",
         "identity": {
           "name": "Mayor Johnson",
           "age": 50,
@@ -97,14 +136,25 @@
           "language": "English",
           "persona": "Local Government Official",
           "personality_description": "Dedicated to public welfare and transparent governance.",
-          "traits": ["Leadership", "Transparent", "Public-minded"],
+          "traits": [
+            "Leadership",
+            "Transparent",
+            "Public-minded"
+          ],
           "interests": [
             "Urban development",
             "Public services",
             "Infrastructure"
           ],
-          "knowledge_base": ["City budget", "Local laws", "Public projects"],
-          "skills": ["Administration", "Public speaking"],
+          "knowledge_base": [
+            "City budget",
+            "Local laws",
+            "Public projects"
+          ],
+          "skills": [
+            "Administration",
+            "Public speaking"
+          ],
           "behavior_patterns": [
             "Attends public meetings",
             "Hosts public events"
@@ -114,23 +164,31 @@
             "Initiated public infrastructure projects"
           ],
           "societal_role": "Mayor",
-          "affiliations": ["Local Government"],
+          "affiliations": [
+            "Local Government"
+          ],
           "current_state": "Mayor",
           "core_memories": [
             "Served on city council",
             "Initiated public infrastructure projects"
           ]
         },
-        "initial_conditions": { "awareness": 0.9 },
+        "initial_conditions": {
+          "awareness": 0.9
+        },
         "relationships": [],
-        "group_affiliations": ["G3"]
+        "group_affiliations": [
+          "G3"
+        ]
       }
     ],
     "groups": [
       {
         "id": "G1",
         "type": "residents_association",
-        "member_agent_ids": ["1"],
+        "member_agent_ids": [
+          "1"
+        ],
         "metadata": {
           "name": "Local Residents' Association",
           "description": "A group focused on resident welfare and community initiatives."
@@ -139,7 +197,9 @@
       {
         "id": "G2",
         "type": "business_association",
-        "member_agent_ids": ["2"],
+        "member_agent_ids": [
+          "2"
+        ],
         "metadata": {
           "name": "Local Business Association",
           "description": "An association representing the interests of local businesses."
@@ -148,7 +208,9 @@
       {
         "id": "G3",
         "type": "local_government",
-        "member_agent_ids": ["3"],
+        "member_agent_ids": [
+          "3"
+        ],
         "metadata": {
           "name": "City Hall",
           "description": "The administrative and decision-making body of the city."

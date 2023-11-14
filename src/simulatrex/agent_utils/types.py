@@ -17,6 +17,7 @@ class AgentType(Enum):
 
 class CognitiveModel(Enum):
     GPT_4 = "gpt-4"
+    GPT_4_TURBO = "gpt-4-1106-preview"
     LLAMA_2_70b = "Llama2_70b"
 
 

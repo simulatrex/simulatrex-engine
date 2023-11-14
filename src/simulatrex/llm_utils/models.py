@@ -11,7 +11,7 @@ from abc import ABC, abstractmethod
 
 from dotenv import load_dotenv
 from pydantic import BaseModel
-import openai
+from openai import OpenAI
 import requests
 import instructor
 
@@ -56,27 +56,29 @@ class OpenAILanguageModel(BaseLanguageModel):
                 "No OpenAI API key found. Please set OPENAI_API_KEY as environment variable."
             )
 
-        self.api_key = api_key
+        self.client = OpenAI(api_key=api_key)
         self.model_id = model_id
         self.agent_id = agent_id
 
-        # Patch the openai.ChatCompletion.create and openai.ChatCompletion.acreate methods to support the response_model parameter.
-        instructor.patch()
+        # Patch the instructor
+        instructor.patch(self.client)
 
     async def ask(
-        self, prompt: str, context_prompt=DEFAULT_SYSTEM_PROMPT, temperature=0.9
+        self, prompt: str, context_prompt=DEFAULT_SYSTEM_PROMPT, temperature=1.0
     ) -> str:
         try:
-            chat_completion = openai.ChatCompletion.create(
+            chat_completion = self.client.chat.completions.create(
                 messages=[
                     {"role": "system", "content": context_prompt},
                     {"role": "user", "content": prompt},
                 ],
                 model=self.model_id.value,
-                max_retries=2,
                 temperature=temperature,
             )
-            response_message = chat_completion["choices"][0].message.content
+            response_message = chat_completion.choices[0].message.content
+
+            if response_message == None:
+                raise Exception("Empty response from OpenAI API")
 
             # Log the response
             if self.agent_id:
@@ -96,14 +98,13 @@ class OpenAILanguageModel(BaseLanguageModel):
         temperature=0.9,
     ):
         try:
-            structured_response = openai.ChatCompletion.create(
+            structured_response = self.client.chat.completions.create(
                 messages=[
                     {"role": "system", "content": context_prompt},
                     {"role": "user", "content": prompt},
                 ],
                 response_model=response_model,
                 model=self.model_id.value,
-                max_retries=2,
                 temperature=temperature,
             )
 

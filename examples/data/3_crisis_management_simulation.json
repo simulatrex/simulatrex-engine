@@ -23,7 +23,7 @@
       {
         "id": "A1",
         "type": "LLM_AGENT",
-        "cognitive_model": "gpt-4",
+        "cognitive_model": "gpt-4-1106-preview",
         "identity": {
           "name": "Techtronics Inc. PR Team",
           "age": 10,
@@ -32,7 +32,11 @@
           "language": "English",
           "persona": "Corporate PR Team",
           "personality_description": "Strategically-minded, proactive in crisis management.",
-          "traits": ["Strategic", "Responsive", "Brand-loyal"],
+          "traits": [
+            "Strategic",
+            "Responsive",
+            "Brand-loyal"
+          ],
           "interests": [
             "Brand reputation",
             "Media relations",
@@ -54,18 +58,22 @@
             "Coordinated product launches"
           ],
           "societal_role": "Guardian of the brand's reputation",
-          "affiliations": ["Techtronics Inc."],
+          "affiliations": [
+            "Techtronics Inc."
+          ],
           "current_state": "Active",
           "core_memories": []
         },
-        "initial_conditions": { "awareness": 0.95 },
+        "initial_conditions": {
+          "awareness": 0.95
+        },
         "relationships": [],
         "group_affiliations": []
       },
       {
         "id": "A2",
         "type": "LLM_AGENT",
-        "cognitive_model": "gpt-4",
+        "cognitive_model": "gpt-4-1106-preview",
         "identity": {
           "name": "Global Media",
           "age": 25,
@@ -74,25 +82,41 @@
           "language": "English",
           "persona": "International Media Outlets",
           "personality_description": "Always on the lookout for breaking news.",
-          "traits": ["Inquisitive", "Fast-paced", "Broad reach"],
-          "interests": ["Breaking news", "Corporate stories", "Market trends"],
+          "traits": [
+            "Inquisitive",
+            "Fast-paced",
+            "Broad reach"
+          ],
+          "interests": [
+            "Breaking news",
+            "Corporate stories",
+            "Market trends"
+          ],
           "knowledge_base": [
             "World news",
             "Previous brand stories",
             "Public interests"
           ],
           "behavior_patterns": [],
-          "skills": ["Quick reporting", "Analysis", "Public reach"],
+          "skills": [
+            "Quick reporting",
+            "Analysis",
+            "Public reach"
+          ],
           "past_experiences": [
             "Reported major brand crises",
             "Conducted company interviews"
           ],
           "societal_role": "Reporter and influencer of public opinion",
-          "affiliations": ["Various media networks"],
+          "affiliations": [
+            "Various media networks"
+          ],
           "current_state": "Active",
           "core_memories": []
         },
-        "initial_conditions": { "awareness": 0.9 },
+        "initial_conditions": {
+          "awareness": 0.9
+        },
         "relationships": [],
         "group_affiliations": []
       }
@@ -131,7 +155,11 @@
           "target": "Maintain a 60% positive brand sentiment"
         }
       ],
-      "metrics": ["Response time", "Brand sentiment", "Public reception"],
+      "metrics": [
+        "Response time",
+        "Brand sentiment",
+        "Public reception"
+      ],
       "output_location": "./crisis_management_results/"
     }
   }
