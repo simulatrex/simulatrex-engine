@@ -16,7 +16,7 @@
     <a href="https://dominikscherm.substack.com/p/introducing-simulatrex">
         <img src="https://img.shields.io/badge/Documentation-Substack-orange" alt="Substack documentation">
     </a>
-    <a href="https://discord.gg/THG27uRm">
+    <a href="https://discord.gg/RjG64szFDR">
         <img src="https://img.shields.io/static/v1?label=Chat%20on&message=Discord&color=blue&logo=Discord&style=flat-square" alt="Discord">
     </a>
 </h4>
