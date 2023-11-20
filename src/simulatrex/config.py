@@ -5,14 +5,15 @@ File: config.py
 Description: Defines a config for a simulation
 
 """
-from pydantic import BaseModel
+
+from pydantic import Field, root_validator, BaseModel, ValidationError
 from typing import List, Dict, Optional, Union
 
 
 class Objective(BaseModel):
     id: str
     description: str
-    metric: str
+    metric: Optional[str] = None
     target: str
 
 
@@ -108,7 +109,7 @@ class Event(BaseModel):
     type: str
     source: str
     content: str
-    impact: float
+    impact: Optional[float] = None
     scheduled_time: str
 
 
@@ -123,14 +124,22 @@ class ExpectedOutcome(BaseModel):
     agent_collaboration_count: int
 
 
+class TargetGroup(BaseModel):
+    id: str
+    role: str
+    responsibilities: str
+    initial_conditions: Optional[InitialConditions] = None
+    num_agents: int = 1
+
+
 class SimulationConfig(BaseModel):
     title: str
     environment: Environment
-    agents: List[Agent]
-    groups: List[AgentGroup] or None
+    agents: Optional[List[Agent]] = None
+    groups: Optional[List[AgentGroup]] = None
+    target_groups: Optional[List[TargetGroup]] = None
     events: List[Event]
-    evaluation: Evaluation or None
-    # expected_outcomes: Optional[ExpectedOutcome]
+    evaluation: Evaluation
 
 
 class Config(BaseModel):

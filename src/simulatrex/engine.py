@@ -15,6 +15,7 @@ from simulatrex.environment import (
     EnvironmentType,
 )
 from simulatrex.evaluation import EvaluationEngine
+from simulatrex.target_group import TargetGroup
 from simulatrex.utils.json_utils import JSONHelper
 from simulatrex.utils.log import SingletonLogger
 
@@ -27,8 +28,7 @@ class SimulationEngine:
         self.config = Config(**json_data)
         self.title = self.config.simulation.title
 
-        self.agents = self.init_agents()  # Initialize agents from JSON
-        self.environment = self.init_environment()  # Initialize environment from JSON
+        self.environment = self.init_environment()
 
         time_config = self.config.simulation.environment.time_config
         self.environment.init_time(time_config)
@@ -37,6 +37,22 @@ class SimulationEngine:
         self.total_iterations = (
             self.environment.end_time - self.environment.start_time
         ) / self.environment.time_multiplier
+
+    async def init_target_groups(self) -> List[LLMAgent]:
+        agents = []
+
+        for group in self.config.simulation.target_groups:
+            target_group = TargetGroup(
+                group.id,
+                group.role,
+                group.responsibilities,
+                group.initial_conditions,
+            )
+            target_agents = await target_group.spawn_agents(group.num_agents)
+
+            agents.extend(target_agents)
+
+        return agents
 
     def init_agents(self) -> List[LLMAgent]:
         agents = []
@@ -79,6 +95,12 @@ class SimulationEngine:
             raise ValueError(f"Unsupported environment type: {enviroment_type}")
 
     async def run(self):
+        # Initialize agents
+        if self.config.simulation.target_groups is not None:
+            self.agents = await self.init_target_groups()
+        else:
+            self.agents = self.init_agents()
+
         while True:
             # Check stopping time
             if not self.environment.is_running():
