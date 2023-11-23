@@ -19,3 +19,13 @@ class Simulation(Base):
     name = Column(String, index=True)
     description = Column(String)
     author = Column(String)
+    config = Column(String)
+
+
+class SimulationLog(Base):
+    __tablename__ = "simulation_logs"
+
+    id = Column(String, primary_key=True, index=True)
+    simulation_id = Column(String, index=True)
+    timestamp = Column(String)
+    message = Column(String)

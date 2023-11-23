@@ -17,7 +17,22 @@ class User(UserBase):
 
 
 class SimulationBase(BaseModel):
-    id: str
     name: str
     description: str
     author: str
+    config: str
+
+
+class Simulation(SimulationBase):
+    id: str
+
+
+class SimulationCreate(SimulationBase):
+    pass
+
+
+class SimulationLog(BaseModel):
+    id: str
+    simulation_id: str
+    timestamp: str
+    message: str
