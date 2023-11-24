@@ -21,7 +21,7 @@ setup(
     install_requires=[
         "openai",
         "uuid",
-        "numpy",
+        "pandas",
         "termcolor",
         "chromadb",
         "pydantic",

@@ -5,6 +5,7 @@ File: engine.py
 Description: Main engine for running simulations
 
 """
+import pandas as pd
 from typing import List
 
 from simulatrex.config import Config
@@ -23,8 +24,18 @@ _logger = SingletonLogger
 
 
 class SimulationEngine:
-    def __init__(self, config_path: str):
-        json_data = JSONHelper.read_json(config_path)
+    def __init__(
+        self,
+        config_path: str = None,
+        config: dict = None,
+    ):
+        _logger.info("Initializing simulation engine...")
+        if config_path:
+            json_data = JSONHelper.read_json(config_path)
+        elif config:
+            json_data = config
+        else:
+            raise ValueError("Either config_path or config must be provided")
         self.config = Config(**json_data)
         self.title = self.config.simulation.title
 
@@ -37,6 +48,8 @@ class SimulationEngine:
         self.total_iterations = (
             self.environment.end_time - self.environment.start_time
         ) / self.environment.time_multiplier
+
+        self.simulation_results = None
 
     async def init_target_groups(self) -> List[LLMAgent]:
         agents = []
@@ -137,7 +150,19 @@ class SimulationEngine:
         # Evaluate the simulation
         _logger.info("Simulation finished. Evaluating results...")
         evaluation_engine = EvaluationEngine(self.config.simulation.evaluation)
-        simulation_results = await evaluation_engine.evaluate_agents_outputs(
+        self.simulation_results = await evaluation_engine.evaluate_agents_outputs(
             self.agents, self.environment
         )
-        _logger.info(f"Simulation results: {simulation_results}")
+        _logger.info(f"Simulation results: {self.simulation_results}")
+
+    def get_evaluation_data(self):
+        data = []
+        for result in self.simulation_results:
+            data.append(
+                {
+                    "objective_id": result["objective_id"],
+                    "description": result["description"],
+                    "llm_response": result["llm_response"],
+                }
+            )
+        return pd.DataFrame(data)
