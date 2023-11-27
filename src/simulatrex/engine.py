@@ -5,6 +5,7 @@ File: engine.py
 Description: Main engine for running simulations
 
 """
+import re
 import pandas as pd
 from typing import List
 
@@ -54,24 +55,37 @@ class SimulationEngine:
     async def init_target_groups(self) -> List[LLMAgent]:
         agents = []
 
-        for group in self.config.simulation.target_groups:
+        _target_groups = self.config.simulation.target_groups
+        for group in _target_groups:
             relationships: List[TargetGroupRelationship] = []
-            for relationship in group.relationships:
-                if relationship.target_group_id not in [
-                    group.id for group in self.config.simulation.target_groups
-                ]:
-                    raise ValueError(
-                        f"Referred target group {relationship.target_group_name} does not exist"
+            if group.relationships:
+                for relationship in group.relationships:
+                    if relationship.target_group_id not in [
+                        group.id for group in self.config.simulation.target_groups
+                    ]:
+                        raise ValueError(
+                            f"Referred target group {relationship.target_group_name} does not exist"
+                        )
+
+                    # Create a new target group relationship
+                    _target_group_relation_role = next(
+                        (
+                            target_group.role
+                            for target_group in _target_groups
+                            if target_group.id == relationship.target_group_id
+                        ),
+                        None,
                     )
 
-                # Create a new target group relationship
-                _target_group_relation = TargetGroupRelationship(
-                    relationship.target_group_id,
-                    relationship.type,
-                    relationship.strength,
-                )
+                    _target_group_relation = TargetGroupRelationship(
+                        _target_group_relation_role,
+                        relationship.type,
+                        relationship.strength,
+                    )
 
-                relationships.append(_target_group_relation)
+                    relationships.append(_target_group_relation)
+            else:
+                _logger.info(f"No relationships defined for target group {group.id}.")
 
             # Create a new target group
             target_group = TargetGroup(
@@ -129,6 +143,17 @@ class SimulationEngine:
         else:
             raise ValueError(f"Unsupported environment type: {enviroment_type}")
 
+    def add_message_for_agent(self, agent_id: str, message):
+        try:
+            agent = next(
+                agent
+                for agent in self.agents
+                if re.search(rf"\b{re.escape(agent.id)}\b", agent_id)
+            )
+            agent.message_queue.append(message)
+        except StopIteration:
+            _logger.error(f"Agent with ID {agent_id} not found")
+
     async def run(self):
         # Initialize agents
         if self.config.simulation.target_groups is not None:
@@ -151,7 +176,10 @@ class SimulationEngine:
             for agent in self.agents:
                 # Agent thinks about environment context
                 await agent.think(self.environment)
-                await agent.initiate_conversation(self.environment)
+                await agent.initiate_conversation(
+                    self.environment, self.add_message_for_agent
+                )
+                await agent._process_messages(self.add_message_for_agent)
 
                 # Agent perceives the recent events
                 for event in recent_events:
@@ -160,7 +188,6 @@ class SimulationEngine:
                         event,
                         self.environment,
                     )
-                    await agent._process_messages()
 
             # Log the current iteration
             _logger.info(

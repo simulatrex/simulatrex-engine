@@ -1,1 +1,12 @@
-Given the agent {name}, a {age}-year-old {gender} {persona} of {ethnicity} ethnicity, who speaks {language} and has memories such as {core_memories}. Considering the relationships: {relationships} and group affiliations: {group_affiliations}, determine the most suitable agent from the list: {agent_list} to initiate a conversation with. What would {name} likely start the conversation about, given their shared interests, memories, and affiliations?
+Given the agent {name}, a {age}-year-old {gender} {persona} of {ethnicity} ethnicity, who speaks {language} and has memories such as {core_memories}.
+
+Here are the last thoughts:
+{agent_thoughts}
+
+Here is the current environment context:
+{environment.context}
+
+And here are the relationship to other another agent:
+{agent_relationships}
+
+Craft a conversation message.

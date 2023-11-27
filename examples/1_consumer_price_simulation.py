@@ -6,7 +6,9 @@ dotenv.load_dotenv()
 
 
 async def main():
-    engine = SimulationEngine("./data/1_consumer_price_simulation_config.json")
+    engine = SimulationEngine(
+        config_path="./data/1_consumer_price_simulation_config.json"
+    )
     await engine.run()
 
 

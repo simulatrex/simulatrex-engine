@@ -16,16 +16,16 @@ from simulatrex.llm_utils.models import OpenAILanguageModel
 class TargetGroupRelationship:
     def __init__(
         self,
-        target_group_name: str,
+        role_name: str,
         type: str,
         strength: float,
     ):
-        self.target_group_name = target_group_name
+        self.role_name = role_name
         self.type = type
         self.strength = strength
 
     def summary(self) -> str:
-        return f"Relationship to {self.target_group_name} of type {self.type} with strength {self.strength})"
+        return f"{self.type.capitalize()} with {self.role_name} at a strength level of {self.strength}"
 
 
 class TargetGroup:
@@ -50,13 +50,14 @@ class TargetGroup:
             model_id=CognitiveModel.GPT_4, agent_id=self.id
         )
         for _ in range(num_agents):
+            relationships_summary = "; ".join([r.summary() for r in self.relationships])
             agent = await spawn_agent(
                 cognitive_model,
                 self.cognitive_model_id,
                 self.role,
                 self.responsibilities,
+                relationships_summary,
                 self.initial_conditions,
-                self.relationships,
             )
             self.agents.append(agent)
 

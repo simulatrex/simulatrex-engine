@@ -6,7 +6,9 @@ dotenv.load_dotenv()
 
 
 async def main():
-    engine = SimulationEngine("./data/2_policy_impact_local_communities.json")
+    engine = SimulationEngine(
+        config_path="./data/2_policy_impact_local_communities.json"
+    )
     await engine.run()
 
 

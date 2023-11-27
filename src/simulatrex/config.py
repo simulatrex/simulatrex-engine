@@ -6,7 +6,7 @@ Description: Defines a config for a simulation
 
 """
 
-from pydantic import Field, root_validator, BaseModel, ValidationError
+from pydantic import BaseModel
 from typing import List, Dict, Optional, Union
 
 
@@ -58,7 +58,7 @@ class AgentRelationship(BaseModel):
     strength: float  # E.g., from 0 (acquaintance) to 1 (best friend)
 
     def summary(self) -> str:
-        return f"{self.type} {self.agent_id} with strength {self.strength}"
+        return f"{self.type.capitalize()} with {self.agent_id} at a strength level of {self.strength}"
 
 
 class AgentGroup(BaseModel):

@@ -45,6 +45,12 @@ class Message:
         self.metadata = metadata
 
 
+class AgentConverseResponseModel(BaseModel):
+    should_converse: bool
+    receiver_ids: List[str]
+    message_content: str = None
+
+
 class BaseAgent:
     def __init__(
         self,
@@ -55,7 +61,7 @@ class BaseAgent:
         relationships: List[AgentRelationship] = [],
         group_affiliations: List[str] = [],
     ):
-        self.id = "agent_" + id
+        self.id = id
         self.type = type
 
         self.identity = identity
@@ -80,8 +86,12 @@ class LLMAgent(BaseAgent):
         identity: AgentIdentity,
         initial_conditions: InitialConditions,
         cognitive_model_id: str,
+        relationships: List[AgentRelationship] = [],
+        group_affiliations: List[str] = [],
     ):
-        super().__init__(id, type, identity, initial_conditions)
+        super().__init__(
+            id, type, identity, initial_conditions, relationships, group_affiliations
+        )
 
         self.cognitive_model_id = cognitive_model_id
         self.cognitive_model = None
@@ -154,37 +164,18 @@ class LLMAgent(BaseAgent):
 
         return response
 
-    class AgentConverseResponseModel(BaseModel):
-        should_converse: bool
-        receiver_ids: List[str]
-
-    async def initiate_conversation(self, environment: BaseEnvironment):
+    async def initiate_conversation(self, environment: BaseEnvironment, add_message):
         # Use the cognitive model to decide when to send a message and what the content should be
         reponse = await self._decide_on_converse(environment)
-        if reponse.should_converse:
-            content = await self._generate_message_content(environment)
-            await self._send_message(reponse.receiver_ids, content)
+        if reponse.should_converse and reponse.receiver_ids:
+            for agent_id in reponse.receiver_ids:
+                new_message = Message(self.id, agent_id, reponse.message_content)
 
-    async def _generate_message_content(self, environment: BaseEnvironment) -> str:
-        # Generate a message based on the agent memory and environment
-        prompt = PromptManager().get_filled_template(
-            TemplateType.AGENT_START_CONVERSATION,
-            last_memory=self.memory.long_term_memory.query_memory_by_type(
-                "thought", n_results=1
-            ),
-            agent_name=self.identity.name,
-            environment=environment,
-        )
+                _logger.info(
+                    f"Agent {self.id} is sending a message {reponse.message_content} to agent {agent_id}"
+                )
 
-        try:
-            response = await self.cognitive_model.ask(prompt)
-        except Exception as e:
-            _logger.error(f"Error while asking LLM: {e}")
-
-            # Try request again
-            response = await self.cognitive_model.ask(prompt)
-
-        return response
+                add_message(agent_id, new_message)
 
     async def _decide_on_converse(
         self, environment: BaseEnvironment
@@ -200,13 +191,14 @@ class LLMAgent(BaseAgent):
         for thought in last_thoughts:
             agent_thoughts.append(thought.content)
 
-        agent_relationships = []
+        agent_relationships: List[AgentRelationship] = []
         for relationship in self.relationships:
-            _logger.debug(relationship.summary())
             agent_relationships.append(relationship.summary())
 
         if agent_relationships:
-            _logger.info(f"Relationships found for the agent: {agent_relationships}")
+            _logger.info(
+                f"Relationships found for the agent: {[r.summary() for r in agent_relationships]}"
+            )
             prompt = PromptManager().get_filled_template(
                 TemplateType.AGENT_DECIDE_ON_CONVERSATION,
                 agent_name=self.identity.name,
@@ -216,15 +208,19 @@ class LLMAgent(BaseAgent):
             )
 
             try:
-                response = await self.cognitive_model.generate_structured_output(
-                    prompt, response_model=self.AgentConverseResponseModel
+                response: AgentConverseResponseModel = (
+                    await self.cognitive_model.generate_structured_output(
+                        prompt, response_model=AgentConverseResponseModel
+                    )
                 )
             except Exception as e:
                 _logger.error(f"Error while asking LLM: {e}")
 
                 # Try request again
-                response = await self.cognitive_model.generate_structured_output(
-                    prompt, response_model=self.AgentConverseResponseModel
+                response: AgentConverseResponseModel = (
+                    await self.cognitive_model.generate_structured_output(
+                        prompt, response_model=AgentConverseResponseModel
+                    )
                 )
 
             if response.should_converse:
@@ -236,15 +232,9 @@ class LLMAgent(BaseAgent):
 
         else:
             _logger.info(f"No relationships found for the agent")
-            return self.AgentConverseResponseModel(
-                should_converse=False, receiver_ids=[]
-            )
+            return AgentConverseResponseModel(should_converse=False, receiver_ids=[])
 
-    def _send_message(self, receiver_id: str, content: str):
-        message = Message(self.id, receiver_id, content)
-        return message
-
-    async def _process_messages(self):
+    async def _process_messages(self, add_message):
         for message in self.message_queue:
             # Use the cognitive model to produce results
             converse_prompt = PromptManager().get_filled_template(
@@ -268,7 +258,13 @@ class LLMAgent(BaseAgent):
                 response_content = await self.cognitive_model.ask(converse_prompt)
 
             # Send a reply message
-            self._send_message(message.sender_id, response_content)
+            reply_message = Message(
+                self.id,
+                message.sender_id,
+                response_content,
+            )
+
+            add_message(message.sender_id, reply_message)
 
             # Remove current message object from queue
             self.message_queue = [

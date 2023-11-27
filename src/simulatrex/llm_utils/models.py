@@ -106,7 +106,6 @@ class OpenAILanguageModel(BaseLanguageModel):
                 response_model=response_model,
                 model=self.model_id.value,
                 temperature=temperature,
-                retry_on_timeout=True,
             )
 
             # Log the response

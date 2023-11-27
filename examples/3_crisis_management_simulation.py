@@ -6,7 +6,7 @@ dotenv.load_dotenv()
 
 
 async def main():
-    engine = SimulationEngine("./data/3_crisis_management_simulation.json")
+    engine = SimulationEngine(config_path="./data/3_crisis_management_simulation.json")
     await engine.run()
 
 
