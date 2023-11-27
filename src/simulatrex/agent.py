@@ -52,6 +52,8 @@ class BaseAgent:
         type: AgentType,
         identity: AgentIdentity,
         initial_conditions: InitialConditions,
+        relationships: List[AgentRelationship] = [],
+        group_affiliations: List[str] = [],
     ):
         self.id = "agent_" + id
         self.type = type
@@ -59,8 +61,8 @@ class BaseAgent:
         self.identity = identity
         self.initial_conditions = initial_conditions
 
-        self.relationships: List[AgentRelationship] = []
-        self.groups: List[AgentGroup] = []
+        self.relationships = relationships
+        self.group_affiliations = group_affiliations
 
         self.memory = AgentMemory(
             self.id,

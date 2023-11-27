@@ -16,7 +16,7 @@ from simulatrex.environment import (
     EnvironmentType,
 )
 from simulatrex.evaluation import EvaluationEngine
-from simulatrex.target_group import TargetGroup
+from simulatrex.target_group import TargetGroup, TargetGroupRelationship
 from simulatrex.utils.json_utils import JSONHelper
 from simulatrex.utils.log import SingletonLogger
 
@@ -55,11 +55,31 @@ class SimulationEngine:
         agents = []
 
         for group in self.config.simulation.target_groups:
+            relationships: List[TargetGroupRelationship] = []
+            for relationship in group.relationships:
+                if relationship.target_group_id not in [
+                    group.id for group in self.config.simulation.target_groups
+                ]:
+                    raise ValueError(
+                        f"Referred target group {relationship.target_group_name} does not exist"
+                    )
+
+                # Create a new target group relationship
+                _target_group_relation = TargetGroupRelationship(
+                    relationship.target_group_id,
+                    relationship.type,
+                    relationship.strength,
+                )
+
+                relationships.append(_target_group_relation)
+
+            # Create a new target group
             target_group = TargetGroup(
                 group.id,
                 group.role,
                 group.responsibilities,
                 group.initial_conditions,
+                relationships,
             )
             target_agents = await target_group.spawn_agents(group.num_agents)
 
@@ -77,6 +97,8 @@ class SimulationEngine:
                 agent.identity,
                 agent.initial_conditions,
                 agent.cognitive_model,
+                agent.relationships,
+                agent.group_affiliations,
             )
 
             agents.append(new_agent)
