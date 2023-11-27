@@ -11,6 +11,9 @@ from simulatrex.agent import LLMAgent
 from simulatrex.config import AgentIdentity, InitialConditions
 from simulatrex.llm_utils.models import BaseLanguageModel
 from simulatrex.llm_utils.prompts import PromptManager, TemplateType
+from simulatrex.utils.log import SingletonLogger
+
+_logger = SingletonLogger
 
 
 async def spawn_agent(
@@ -29,9 +32,17 @@ async def spawn_agent(
         responsibilities=responsibilities,
     )
 
-    agent_identity = await cognitive_model.generate_structured_output(
-        prompt, AgentIdentity
-    )
+    try:
+        agent_identity = await cognitive_model.generate_structured_output(
+            prompt, AgentIdentity
+        )
+    except Exception as e:
+        _logger.error(f"Error while asking LLM: {e}")
+
+        # Try request again
+        agent_identity = await cognitive_model.generate_structured_output(
+            prompt, AgentIdentity
+        )
 
     # Instantiate an LLMAgent
     agent = LLMAgent(

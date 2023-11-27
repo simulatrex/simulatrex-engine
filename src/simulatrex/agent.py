@@ -5,7 +5,7 @@ File: agent.py
 Description: Defines an agent, central unit in our simulation
 
 """
-from typing import List
+from typing import Dict, List, Union
 import uuid
 from pydantic import BaseModel
 
@@ -84,6 +84,7 @@ class LLMAgent(BaseAgent):
         self.cognitive_model_id = cognitive_model_id
         self.cognitive_model = None
         self.message_queue: List[Message] = []
+        self.decisions: List[Dict[str, Union[str, int, float]]] = []
 
         _logger.debug(
             f"Agent {self.id} is using cognitive model {self.cognitive_model_id}"
@@ -141,7 +142,14 @@ class LLMAgent(BaseAgent):
             objective=objective,
         )
 
-        response = await self.cognitive_model.ask(prompt)
+        try:
+            response = await self.cognitive_model.ask(prompt)
+        except Exception as e:
+            _logger.error(f"Error while asking LLM: {e}")
+
+            # Try request again
+            response = await self.cognitive_model.ask(prompt)
+
         return response
 
     class AgentConverseResponseModel(BaseModel):
@@ -166,7 +174,14 @@ class LLMAgent(BaseAgent):
             environment=environment,
         )
 
-        response = await self.cognitive_model.ask(prompt)
+        try:
+            response = await self.cognitive_model.ask(prompt)
+        except Exception as e:
+            _logger.error(f"Error while asking LLM: {e}")
+
+            # Try request again
+            response = await self.cognitive_model.ask(prompt)
+
         return response
 
     async def _decide_on_converse(
@@ -198,9 +213,17 @@ class LLMAgent(BaseAgent):
                 environment=environment,
             )
 
-            response = await self.cognitive_model.generate_structured_output(
-                prompt, response_model=self.AgentConverseResponseModel
-            )
+            try:
+                response = await self.cognitive_model.generate_structured_output(
+                    prompt, response_model=self.AgentConverseResponseModel
+                )
+            except Exception as e:
+                _logger.error(f"Error while asking LLM: {e}")
+
+                # Try request again
+                response = await self.cognitive_model.generate_structured_output(
+                    prompt, response_model=self.AgentConverseResponseModel
+                )
 
             if response.should_converse:
                 _logger.info(f"Agent {self.id} decided to start a conversation")
@@ -235,7 +258,12 @@ class LLMAgent(BaseAgent):
                 received_message=message.content,
             )
 
-            response_content = await self.cognitive_model.ask(converse_prompt)
+            try:
+                response_content = await self.cognitive_model.ask(converse_prompt)
+            except Exception as e:
+                _logger.error(f"Error while asking LLM: {e}")
+                # Try request again
+                response_content = await self.cognitive_model.ask(converse_prompt)
 
             # Send a reply message
             self._send_message(message.sender_id, response_content)

@@ -13,6 +13,9 @@ from simulatrex.environment import BaseEnvironment
 from simulatrex.llm_utils.prompts import PromptManager, TemplateType
 from simulatrex.llm_utils.models import OpenAILanguageModel
 from simulatrex.agent_utils.types import CognitiveModel
+from simulatrex.utils.log import SingletonLogger
+
+_logger = SingletonLogger
 
 
 class Objective:
@@ -54,7 +57,13 @@ class EvaluationEngine:
                 objective=objective,
             )
 
-            llm_response = await self.llm.ask(prompt)
+            try:
+                llm_response = await self.llm.ask(prompt)
+            except Exception as e:
+                _logger.error(f"Error while asking LLM: {e}")
+
+                # Try request again
+                llm_response = await self.llm.ask(prompt)
 
             results.append(
                 {

@@ -43,7 +43,13 @@ async def converse(
         topic=topic,
     )
 
-    response = await cognitive_model.ask(prompt)
+    try:
+        response = await cognitive_model.ask(prompt)
+    except Exception as e:
+        _logger.error(f"Error while asking LLM: {e}")
+
+        # Try request again
+        response = await cognitive_model.ask(prompt)
 
     _logger.debug(response)
 

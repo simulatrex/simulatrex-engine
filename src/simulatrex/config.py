@@ -24,26 +24,32 @@ class ResponseModel(BaseModel):
 
 class AgentIdentity(BaseModel):
     name: str
-    age: int
-    gender: str
-    ethnicity: str
-    language: str
-    persona: str
-    personality_description: str
-    traits: List[str]
-    interests: List[str]
-    knowledge_base: List[str]
-    skills: List[str]
-    behavior_patterns: List[str]
-    past_experiences: List[str]
-    societal_role: str
-    affiliations: List[str]
-    current_state: str
-    core_memories: List[str]
+    age: Optional[int] = None
+    gender: Optional[str] = None
+    ethnicity: Optional[str] = None
+    language: Optional[str] = None
+    persona: Optional[str] = None
+    personality_description: Optional[str] = None
+    traits: List[str] = []
+    interests: List[str] = []
+    knowledge_base: List[str] = []
+    skills: List[str] = []
+    behavior_patterns: List[str] = []
+    past_experiences: List[str] = []
+    societal_role: Optional[str] = None
+    affiliations: List[str] = []
+    current_state: Optional[str] = None
+    core_memories: List[str] = []
 
 
 class InitialConditions(BaseModel):
-    awareness: float
+    awareness: Optional[float] = None
+
+
+class TargetGroupRelationship(BaseModel):
+    target_group_id: str  # ID of the other agent in this relationship
+    type: str  # E.g., "friend", "colleague"
+    strength: float  # E.g., from 0 (acquaintance) to 1 (best friend)
 
 
 class AgentRelationship(BaseModel):
@@ -130,6 +136,7 @@ class TargetGroup(BaseModel):
     responsibilities: str
     initial_conditions: Optional[InitialConditions] = None
     num_agents: int = 1
+    relationships: Optional[List[TargetGroupRelationship]] = None
 
 
 class SimulationConfig(BaseModel):

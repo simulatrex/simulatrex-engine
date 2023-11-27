@@ -95,7 +95,7 @@ class OpenAILanguageModel(BaseLanguageModel):
         prompt: str,
         response_model: BaseModel,
         context_prompt=DEFAULT_SYSTEM_PROMPT,
-        temperature=0.9,
+        temperature=1.0,
     ):
         try:
             structured_response = self.client.chat.completions.create(
@@ -106,6 +106,7 @@ class OpenAILanguageModel(BaseLanguageModel):
                 response_model=response_model,
                 model=self.model_id.value,
                 temperature=temperature,
+                retry_on_timeout=True,
             )
 
             # Log the response
