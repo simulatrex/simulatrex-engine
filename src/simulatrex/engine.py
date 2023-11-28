@@ -5,6 +5,8 @@ File: engine.py
 Description: Main engine for running simulations
 
 """
+import re
+import pandas as pd
 from typing import List
 
 from simulatrex.config import Config
@@ -15,7 +17,7 @@ from simulatrex.environment import (
     EnvironmentType,
 )
 from simulatrex.evaluation import EvaluationEngine
-from simulatrex.target_group import TargetGroup
+from simulatrex.target_group import TargetGroup, TargetGroupRelationship
 from simulatrex.utils.json_utils import JSONHelper
 from simulatrex.utils.log import SingletonLogger
 
@@ -23,8 +25,18 @@ _logger = SingletonLogger
 
 
 class SimulationEngine:
-    def __init__(self, config_path: str):
-        json_data = JSONHelper.read_json(config_path)
+    def __init__(
+        self,
+        config_path: str = None,
+        config: dict = None,
+    ):
+        _logger.info("Initializing simulation engine...")
+        if config_path:
+            json_data = JSONHelper.read_json(config_path)
+        elif config:
+            json_data = config
+        else:
+            raise ValueError("Either config_path or config must be provided")
         self.config = Config(**json_data)
         self.title = self.config.simulation.title
 
@@ -38,15 +50,50 @@ class SimulationEngine:
             self.environment.end_time - self.environment.start_time
         ) / self.environment.time_multiplier
 
+        self.simulation_results = None
+
     async def init_target_groups(self) -> List[LLMAgent]:
         agents = []
 
-        for group in self.config.simulation.target_groups:
+        _target_groups = self.config.simulation.target_groups
+        for group in _target_groups:
+            relationships: List[TargetGroupRelationship] = []
+            if group.relationships:
+                for relationship in group.relationships:
+                    if relationship.target_group_id not in [
+                        group.id for group in self.config.simulation.target_groups
+                    ]:
+                        raise ValueError(
+                            f"Referred target group {relationship.target_group_name} does not exist"
+                        )
+
+                    # Create a new target group relationship
+                    _target_group_relation_role = next(
+                        (
+                            target_group.role
+                            for target_group in _target_groups
+                            if target_group.id == relationship.target_group_id
+                        ),
+                        None,
+                    )
+
+                    _target_group_relation = TargetGroupRelationship(
+                        _target_group_relation_role,
+                        relationship.type,
+                        relationship.strength,
+                    )
+
+                    relationships.append(_target_group_relation)
+            else:
+                _logger.info(f"No relationships defined for target group {group.id}.")
+
+            # Create a new target group
             target_group = TargetGroup(
                 group.id,
                 group.role,
                 group.responsibilities,
                 group.initial_conditions,
+                relationships,
             )
             target_agents = await target_group.spawn_agents(group.num_agents)
 
@@ -64,6 +111,8 @@ class SimulationEngine:
                 agent.identity,
                 agent.initial_conditions,
                 agent.cognitive_model,
+                agent.relationships,
+                agent.group_affiliations,
             )
 
             agents.append(new_agent)
@@ -94,6 +143,17 @@ class SimulationEngine:
         else:
             raise ValueError(f"Unsupported environment type: {enviroment_type}")
 
+    def add_message_for_agent(self, agent_id: str, message):
+        try:
+            agent = next(
+                agent
+                for agent in self.agents
+                if re.search(rf"\b{re.escape(agent.id)}\b", agent_id)
+            )
+            agent.message_queue.append(message)
+        except StopIteration:
+            _logger.error(f"Agent with ID {agent_id} not found")
+
     async def run(self):
         # Initialize agents
         if self.config.simulation.target_groups is not None:
@@ -116,7 +176,10 @@ class SimulationEngine:
             for agent in self.agents:
                 # Agent thinks about environment context
                 await agent.think(self.environment)
-                await agent.initiate_conversation(self.environment)
+                await agent.initiate_conversation(
+                    self.environment, self.add_message_for_agent
+                )
+                await agent._process_messages(self.add_message_for_agent)
 
                 # Agent perceives the recent events
                 for event in recent_events:
@@ -125,7 +188,6 @@ class SimulationEngine:
                         event,
                         self.environment,
                     )
-                    await agent._process_messages()
 
             # Log the current iteration
             _logger.info(
@@ -137,7 +199,19 @@ class SimulationEngine:
         # Evaluate the simulation
         _logger.info("Simulation finished. Evaluating results...")
         evaluation_engine = EvaluationEngine(self.config.simulation.evaluation)
-        simulation_results = await evaluation_engine.evaluate_agents_outputs(
+        self.simulation_results = await evaluation_engine.evaluate_agents_outputs(
             self.agents, self.environment
         )
-        _logger.info(f"Simulation results: {simulation_results}")
+        _logger.info(f"Simulation results: {self.simulation_results}")
+
+    def get_evaluation_data(self):
+        data = []
+        for result in self.simulation_results:
+            data.append(
+                {
+                    "objective_id": result["objective_id"],
+                    "description": result["description"],
+                    "llm_response": result["llm_response"],
+                }
+            )
+        return pd.DataFrame(data)

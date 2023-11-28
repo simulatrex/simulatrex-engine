@@ -1,3 +1,10 @@
+"""
+Author: Dominik Scherm (dom@simulatrex.ai)
+
+File: time_utils.py
+Description: Time Utils
+
+"""
 from datetime import datetime
 
 

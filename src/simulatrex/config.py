@@ -6,7 +6,7 @@ Description: Defines a config for a simulation
 
 """
 
-from pydantic import Field, root_validator, BaseModel, ValidationError
+from pydantic import BaseModel
 from typing import List, Dict, Optional, Union
 
 
@@ -24,36 +24,41 @@ class ResponseModel(BaseModel):
 
 class AgentIdentity(BaseModel):
     name: str
-    age: int
-    gender: str
-    ethnicity: str
-    language: str
-    persona: str
-    personality_description: str
-    traits: List[str]
-    interests: List[str]
-    knowledge_base: List[str]
-    skills: List[str]
-    behavior_patterns: List[str]
-    past_experiences: List[str]
-    societal_role: str
-    affiliations: List[str]
-    current_state: str
-    core_memories: List[str]
+    age: Optional[int] = None
+    gender: Optional[str] = None
+    ethnicity: Optional[str] = None
+    language: Optional[str] = None
+    persona: Optional[str] = None
+    personality_description: Optional[str] = None
+    traits: List[str] = []
+    interests: List[str] = []
+    knowledge_base: List[str] = []
+    skills: List[str] = []
+    behavior_patterns: List[str] = []
+    past_experiences: List[str] = []
+    societal_role: Optional[str] = None
+    affiliations: List[str] = []
+    current_state: Optional[str] = None
+    core_memories: List[str] = []
 
 
 class InitialConditions(BaseModel):
-    awareness: float
+    awareness: Optional[float] = None
+
+
+class TargetGroupRelationship(BaseModel):
+    target_group_id: str  # ID of the other agent in this relationship
+    type: str  # E.g., "friend", "colleague"
+    strength: float  # E.g., from 0 (acquaintance) to 1 (best friend)
 
 
 class AgentRelationship(BaseModel):
     agent_id: str  # ID of the other agent in this relationship
     type: str  # E.g., "friend", "colleague"
     strength: float  # E.g., from 0 (acquaintance) to 1 (best friend)
-    metadata: Optional[Dict[str, Union[str, int, float]]]
 
     def summary(self) -> str:
-        return f"{self.type} {self.agent_id} with strength {self.strength}"
+        return f"{self.type.capitalize()} with {self.agent_id} at a strength level of {self.strength}"
 
 
 class AgentGroup(BaseModel):
@@ -71,7 +76,6 @@ class Agent(BaseModel):
     cognitive_model: str
     relationships: List[AgentRelationship]
     group_affiliations: List[str]
-    # response_model: ResponseModel
 
 
 class AgentsHierarchy(BaseModel):
@@ -130,6 +134,7 @@ class TargetGroup(BaseModel):
     responsibilities: str
     initial_conditions: Optional[InitialConditions] = None
     num_agents: int = 1
+    relationships: Optional[List[TargetGroupRelationship]] = None
 
 
 class SimulationConfig(BaseModel):

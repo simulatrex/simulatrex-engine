@@ -12,9 +12,12 @@ from typing import List
 from simulatrex.agent_utils.types import CognitiveModel
 from simulatrex.llm_utils.models import OpenAILanguageModel
 from simulatrex.llm_utils.prompts import PromptManager, TemplateType
+from simulatrex.utils.log import SingletonLogger
 from simulatrex.utils.time_utils import TimeUtils
 from simulatrex.event import Event, EventEngine
 from simulatrex.config import SimulationTimeConfig
+
+_logger = SingletonLogger
 
 
 class EnvironmentType(Enum):
@@ -90,7 +93,13 @@ class BaseEnvironment:
             events_summary=", ".join([event.content for event in active_events]),
         )
 
-        response = await self.llm.ask(summarize_env_prompt)
+        try:
+            response = await self.llm.ask(summarize_env_prompt)
+        except Exception as e:
+            _logger.error(f"Error while asking LLM: {e}")
+            # Try request again
+            response = await self.llm.ask(summarize_env_prompt)
+
         return response
 
     def get_recent_events(self, max_events=5):

@@ -39,7 +39,17 @@ async def think(
         environment_entities=", ".join(environment.entities),
     )
 
-    response = await cognitive_model.generate_structured_output(prompt, MemoryUnitModel)
+    try:
+        response = await cognitive_model.generate_structured_output(
+            prompt, MemoryUnitModel
+        )
+    except Exception as e:
+        _logger.error(f"Error while asking LLM: {e}")
+
+        # Try request again
+        response = await cognitive_model.generate_structured_output(
+            prompt, MemoryUnitModel
+        )
 
     _logger.debug(f"Agent {identity.name} thought: {response}")
 

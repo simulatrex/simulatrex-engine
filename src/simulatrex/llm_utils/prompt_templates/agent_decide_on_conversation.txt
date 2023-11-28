@@ -1,14 +1,16 @@
-Decide if the agent "{agent_name}" should converse with another agent based on his last chain of thoughts and the current environment.
+Decide if the agent "{agent_name}" should converse with another agent based on the last chain of thoughts and the current environment.
 
-Here are his last thoughts:
+Here are the last thoughts:
 {agent_thoughts}
 
 Here is the current environment context:
 {environment.context}
 
-And here are his relationships to other agents:
+And here are the relationships to other agents:
 {agent_relationships}
 
 Answer in the following format:
 - should_converse: booelan, just true or false
-- receiver_ids: list of strings, if yes, then decide to who of the related agents, can be multiple
+- receiver_ids: list of ids, if yes, then decide to who of the related agents, can be multiple, but return only their ids
+- message_content: string, if yes, then what should the agent say otherwise empty
+
