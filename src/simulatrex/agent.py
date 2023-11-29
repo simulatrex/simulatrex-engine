@@ -191,19 +191,22 @@ class LLMAgent(BaseAgent):
         for thought in last_thoughts:
             agent_thoughts.append(thought.content)
 
-        agent_relationships: List[AgentRelationship] = []
+        agent_relationships: List[str] = []
         for relationship in self.relationships:
             agent_relationships.append(relationship.summary())
 
         if agent_relationships:
+            _agent_relationships_summary = "; ".join(
+                [str(r) for r in agent_relationships]
+            )
             _logger.info(
-                f"Relationships found for the agent: {[r.summary() for r in agent_relationships]}"
+                f"Relationships found for the agent: {_agent_relationships_summary}"
             )
             prompt = PromptManager().get_filled_template(
                 TemplateType.AGENT_DECIDE_ON_CONVERSATION,
                 agent_name=self.identity.name,
                 agent_thoughts=agent_thoughts,
-                agent_relationships=agent_relationships,
+                agent_relationships=_agent_relationships_summary,
                 environment=environment,
             )
 
