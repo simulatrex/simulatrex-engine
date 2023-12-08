@@ -21,7 +21,6 @@
 * [Environment](concept/environment.md)
 * [Target Group](concept/target-group.md)
 * [Agent](concept/agent.md)
-* [Group](concept/group.md)
 * [Relationship](concept/relationship.md)
 * [Event](concept/event.md)
 * [Evaluation](concept/evaluation.md)
