@@ -7,8 +7,8 @@
     <a href="https://pypi.org/project/simulatrex" target="_blank">
         <img src="https://img.shields.io/pypi/v/simulatrex.svg" alt="PyPI Version">
     </a>
-    <a href="https://dominikscherm.substack.com/p/introducing-simulatrex">
-        <img src="https://img.shields.io/badge/Documentation-Substack-orange" alt="Substack documentation">
+    <a href="https://simulatrex.gitbook.io/simulatrex/">
+        <img src="https://img.shields.io/static/v1?label=Read%20the%20docs&message=GitBook&color=green" alt="GitBook Docs">
     </a>
     <a href="https://discord.gg/RjG64szFDR">
         <img src="https://img.shields.io/static/v1?label=Chat%20on&message=Discord&color=blue&logo=Discord&style=flat-square" alt="Discord">
