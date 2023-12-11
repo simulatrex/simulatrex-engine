@@ -3,7 +3,7 @@
 ## Overview
 
 * [What is Simulatrex?](overview/about.md)
-* [Why Simulatrex?](overview/why-simulatrex.md)
+<!-- * [Why Simulatrex?](overview/why-simulatrex.md) -->
 * [Architecture](overview/architecture.md)
 * [Applications](overview/applications.md)
 
@@ -21,9 +21,11 @@
 * [Environment](concept/environment.md)
 * [Target Group](concept/target-group.md)
 * [Agent](concept/agent.md)
-* [Relationship](concept/relationship.md)
+* [Relationship]()
+    * [Agent Relationship](concept/relationship/agent-relationship.md)
+    * [Target Group Relationship](concept/relationship/target-relationship.md)
 * [Event](concept/event.md)
-* [Evaluation](concept/evaluation.md)
+* [Evaluation]()
     * [Objective](concept/evaluation/objective.md)
 
 

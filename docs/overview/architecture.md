@@ -4,3 +4,16 @@ Simulatrex is a powerful simulation framework that utilizes Large Language Model
 
 ## Flow Chart
 
+<figure>
+  <picture>
+    <source
+        srcset="../assets/simulation-architecture-dark.png"
+        media="(prefers-color-scheme: dark)"
+        />
+    <img
+      src="../assets/simulation-architecture-light.png"
+      alt="Simulatrex Cover"
+      width="50%"
+    />
+  </picture>
+</figure>

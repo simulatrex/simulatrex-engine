@@ -1,5 +1,7 @@
 # Target Group
 
+> **Note:** This feature is first supported since config version 0.1.1 
+
 A target group is an abstraction of agents and consists of a defined number of agents. These agents are spawned with the help of an LLM.
 
 ## Required Parameters

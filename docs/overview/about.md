@@ -6,7 +6,6 @@
       width="100%"
     />
   </picture>
-  <figcaption>Simulatrex Cover</figcaption>
 </figure>
 
-Simulatrex is a powerful simulation framework that utilizes LLMs (Large Language Models) for creating multi-agent simulations. It is specifically designed to cater to the needs of social sciences and market research, providing a robust platform for complex simulations. Simulatrex allows for the creation of diverse agents with unique cognitive models, enabling them to interact within a defined simulation environment. This makes it an ideal tool for studying social dynamics, market trends, and other phenomena in a controlled, simulated setting.
+Simulatrex leverages the innovative approach of Generative Agent-Based Modeling (GABM) to provide a groundbreaking simulation platform. Utilizing advanced large language models, GABM endows agents with unparalleled cognitive complexity, enabling them to mimic human decision-making processes closely. This adds an unprecedented level of realism to simulations, applicable across various fields such as social sciences, policy-making, and digital services. GABM's versatility allows for experimentation in diverse scenarios, enhancing the authenticity and relevance of simulations. Simulatrex, with its GABM framework, stands at the forefront of simulating human behavior, offering a powerful tool for researchers and practitioners alike.
