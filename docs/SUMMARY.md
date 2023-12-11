@@ -17,7 +17,7 @@
 
 ## Concept
 
-* [Simulation Config](concept/simulfiration-config.md)
+* [Simulation Config](concept/simulation-config.md)
 * [Environment](concept/environment.md)
 * [Target Group](concept/target-group.md)
 * [Agent](concept/agent.md)
