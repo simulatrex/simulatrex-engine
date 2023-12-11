@@ -7,13 +7,13 @@
 * [Architecture](overview/architecture.md)
 * [Applications](overview/applications.md)
 
-<!-- ## How to
+## How to
 
 * [Run your first simulation](how-to/first-simulation.md)
-* [Market Simulation](how-to/market-simulation.md)
+<!-- * [Market Simulation](how-to/market-simulation.md)
 * [Crisis Simulation](how-to/crisis-simulation.md)
 * [Policy Simulation](how-to/policy-simulation.md)
-* [Prisoner's Dilemma](how-to/prisoners-simulation.md) -->
+* [Prisoner's Dilemma](how-to/prisoners-simulation.md) --> -->
 
 ## Concept
 
