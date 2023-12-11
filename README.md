@@ -1,14 +1,8 @@
-<h1 align="center">
-        Simulatrex 🪄 
-    </h1>
-    <p align="center">
-        <p align="center">Large Language Model (LLM) based simulation framework designed to run market research and social science simulations involving multi-agent structures and hierarchies
-        <br>
-        <br>
-        <a href="https://cal.com/d42me/30min">Schedule Demo</a>
-        ·
-        <a href="https://github.com/simulatrex/simulatrex/issues/new?assignees=&labels=enhancement&projects=&title=%5BFeature%5D%3A+">Feature Request</a>
-    </p>
+<div align="center">
+<img src="./docs/assets/cover.png" alt="Simulatrex" width="100%" />
+</div>
+<br/>
+
 <h4 align="center">
     <a href="https://pypi.org/project/simulatrex" target="_blank">
         <img src="https://img.shields.io/pypi/v/simulatrex.svg" alt="PyPI Version">
@@ -21,10 +15,20 @@
     </a>
 </h4>
 
-<div align="center">
-<img src="cover.png" alt="Simulatrex" width="300"/>
-</div>
-<br/>
+
+<p align="center">
+    <p align="center">Simulatrex is an open-source project focused on Generative Agent-Based Modeling (GABM), utilizing large language models for more accurate simulations. It's designed for researchers and developers interested in exploring human behavior and social dynamics. GABM in Simulatrex enhances agents with cognitive capabilities, allowing for more realistic decision-making processes in simulations. This tool is particularly useful in social sciences, policy analysis, and digital service design, offering a platform for innovative and relevant experimentation in a variety of settings.
+    <br>
+    <br>
+    <a href="https://cal.com/d42me/30min">Schedule Demo</a>
+    ·
+    <a href="https://github.com/simulatrex/simulatrex/issues/new?assignees=&labels=enhancement&projects=&title=%5BFeature%5D%3A+">Feature Request</a>
+</p>
+
+## Documentation
+
+For more detailed information about Simulatrex, please refer to our [documentation](https://simulatrex.gitbook.io/simulatrex/).
+
 
 ## Features
 
