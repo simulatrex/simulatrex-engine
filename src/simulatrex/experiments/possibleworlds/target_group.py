@@ -6,11 +6,12 @@ Description: Target Group Class
 
 """
 from typing import List, Optional
-from simulatrex.agent import LLMAgent
-from simulatrex.agent_utils.spawn import spawn_agent
-from simulatrex.agent_utils.types import CognitiveModel
-from simulatrex.config import InitialConditions
+from simulatrex.agent.agent import LLMAgent
+from simulatrex.agent.actions.spawn import spawn_agent
+from simulatrex.agent.utils.types import CognitiveModel
 from simulatrex.llm_utils.models import OpenAILanguageModel
+
+from simulatrex.experiments.possibleworlds.config import InitialConditions
 
 
 class TargetGroupRelationship:

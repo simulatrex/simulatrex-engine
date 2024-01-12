@@ -22,6 +22,7 @@ class TemplateType(Enum):
     SUMMARIZE_ENVIRONMENT = "summarize_environment.txt"
     EVALUATE_AGENT_OUTPUTS = "evaluate_agent_outputs.txt"
     AGENT_INTERVIEW = "agent_interview.txt"
+    AGENT_BEHAVIORAL_RESPONSE = "agent_behavioral_response.txt"
 
 
 class PromptManager:

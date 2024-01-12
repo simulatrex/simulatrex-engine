@@ -15,10 +15,10 @@ from openai import OpenAI
 import requests
 import instructor
 
-load_dotenv()
-
-from simulatrex.agent_utils.types import CognitiveModel
+from simulatrex.agent.utils.types import CognitiveModel
 from simulatrex.utils.log import SingletonLogger
+
+load_dotenv()
 
 _logger = SingletonLogger
 

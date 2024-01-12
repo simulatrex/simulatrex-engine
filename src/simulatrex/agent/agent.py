@@ -5,22 +5,21 @@ File: agent.py
 Description: Defines an agent, central unit in our simulation
 
 """
-from typing import Dict, List, Union
+from typing import Any, Dict, List, Union
 import uuid
 from pydantic import BaseModel
+from simulatrex.agent.actions.prompt import prompt_response
 
-from simulatrex.environment import BaseEnvironment
-from simulatrex.config import (
+from simulatrex.experiments.possibleworlds.environment import BaseEnvironment
+from simulatrex.experiments.possibleworlds.config import (
     AgentIdentity,
-    InitialConditions,
+    Event,
     AgentRelationship,
-    AgentGroup,
     Objective,
 )
-from simulatrex.agent_utils.types import AgentType, AgentMemory, CognitiveModel
-from simulatrex.agent_utils.perceive import perceive
-from simulatrex.agent_utils.think import think
-from simulatrex.event import Event
+from simulatrex.agent.utils.types import AgentType, AgentMemory, CognitiveModel
+from simulatrex.agent.actions.perceive import perceive
+from simulatrex.agent.actions.think import think
 from simulatrex.utils.log import SingletonLogger
 from simulatrex.llm_utils.models import OpenAILanguageModel, LlamaLanguageModel
 from simulatrex.llm_utils.prompts import PromptManager, TemplateType
@@ -57,7 +56,6 @@ class BaseAgent:
         id: str,
         type: AgentType,
         identity: AgentIdentity,
-        initial_conditions: InitialConditions,
         relationships: List[AgentRelationship] = [],
         group_affiliations: List[str] = [],
     ):
@@ -65,17 +63,11 @@ class BaseAgent:
         self.type = type
 
         self.identity = identity
-        self.initial_conditions = initial_conditions
 
         self.relationships = relationships
         self.group_affiliations = group_affiliations
 
-        self.memory = AgentMemory(
-            self.id,
-            decay_factor=initial_conditions["decay_factor"]
-            if initial_conditions and "decay_factor" in initial_conditions
-            else 0.995,
-        )
+        self.memory = AgentMemory(self.id, decay_factor=0.995)
 
 
 class LLMAgent(BaseAgent):
@@ -84,14 +76,11 @@ class LLMAgent(BaseAgent):
         id: str,
         type: AgentType,
         identity: AgentIdentity,
-        initial_conditions: InitialConditions,
         cognitive_model_id: str,
         relationships: List[AgentRelationship] = [],
         group_affiliations: List[str] = [],
     ):
-        super().__init__(
-            id, type, identity, initial_conditions, relationships, group_affiliations
-        )
+        super().__init__(id, type, identity, relationships, group_affiliations)
 
         self.cognitive_model_id = cognitive_model_id
         self.cognitive_model = None
@@ -135,6 +124,15 @@ class LLMAgent(BaseAgent):
             event,
         )
 
+    # Query the agent with a question
+    async def query(self, question: str):
+        """
+        Query the agent with a question that takes into account its personality traits
+        """
+        response = await prompt_response(self.cognitive_model, question, self.identity)
+        return response
+
+    # Used for thinking
     async def think(self, environment: BaseEnvironment):
         # Based on the provided envrioment make some thoughts
         await think(self.cognitive_model, self.memory, self.identity, environment)

@@ -5,13 +5,17 @@ File: spawn.py
 Description: Spawn Agent Utility
 
 """
-from typing import List, Optional
+from typing import Optional
 import uuid
-from simulatrex.agent import LLMAgent
-from simulatrex.config import AgentIdentity, InitialConditions
+
+from simulatrex.agent.agent import LLMAgent
 from simulatrex.llm_utils.models import BaseLanguageModel
 from simulatrex.llm_utils.prompts import PromptManager, TemplateType
 from simulatrex.utils.log import SingletonLogger
+
+from simulatrex.experiments.possibleworlds.config import (
+    AgentIdentity,
+)
 
 _logger = SingletonLogger
 
@@ -19,19 +23,16 @@ _logger = SingletonLogger
 async def spawn_agent(
     cognitive_model: BaseLanguageModel,
     cognitive_model_id: str,
-    role: str,
-    responsibilities: str,
-    relationships_summary: str,
-    initial_conditions: Optional[InitialConditions] = None,
+    attributes: list,
+    previous_agent_description: Optional[str] = "",
 ):
     """
     Spawn a new agent
     """
     prompt = PromptManager().get_filled_template(
         TemplateType.AGENT_IDENTITY_SPAWN,
-        role=role,
-        responsibilities=responsibilities,
-        relationships=relationships_summary,
+        attributes=attributes,
+        previous_agent_description=previous_agent_description,
     )
 
     _logger.info(f"Prompt: {prompt}")
@@ -55,7 +56,6 @@ async def spawn_agent(
         id=str(uuid.uuid4()),
         type="LLM_AGENT",
         identity=agent_identity,
-        initial_conditions=initial_conditions,
         cognitive_model_id=cognitive_model_id,
     )
 

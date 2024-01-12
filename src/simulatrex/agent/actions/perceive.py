@@ -5,13 +5,14 @@ File: perceive.py
 Description: Perceive the current enviroment and what is happening
 
 """
-from simulatrex.environment import BaseEnvironment
-from simulatrex.config import AgentIdentity
+from simulatrex.agent.utils.types import AgentMemory
 from simulatrex.llm_utils.prompts import PromptManager, TemplateType
 from simulatrex.llm_utils.models import BaseLanguageModel
 from simulatrex.utils.log import SingletonLogger
-from simulatrex.event import Event
-from .types import AgentMemory
+
+from simulatrex.experiments.possibleworlds.config import AgentIdentity
+from simulatrex.experiments.possibleworlds.environment import BaseEnvironment
+from simulatrex.experiments.possibleworlds.event import Event
 
 _logger = SingletonLogger
 

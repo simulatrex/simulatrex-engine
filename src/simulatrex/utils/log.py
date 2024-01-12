@@ -52,20 +52,28 @@ class Logger:
                 rh.setFormatter(formatter)
                 self.agent_logger.addHandler(rh)
 
+    def set_enabled(self, enabled: bool):
+        self.enabled = enabled
+
     def debug(self, msg):
-        self.logger.debug(colored(msg, "blue"))
+        if self.enabled:
+            self.logger.debug(colored(msg, "blue"))
 
     def info(self, msg):
-        self.logger.info(colored(msg, "green"))
+        if self.enabled:
+            self.logger.info(colored(msg, "green"))
 
     def warning(self, msg):
-        self.logger.warning(colored(msg, "yellow"))
+        if self.enabled:
+            self.logger.warning(colored(msg, "yellow"))
 
     def error(self, msg):
-        self.logger.error(colored(msg, "red"))
+        if self.enabled:
+            self.logger.error(colored(msg, "red"))
 
     def log_agent_response(self, agent_id: str, response: str):
-        self.agent_logger.info(f"{agent_id} - {response}")
+        if self.enabled:
+            self.agent_logger.info(f"{agent_id} - {response}")
 
 
 SingletonLogger = Logger()

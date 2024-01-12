@@ -1,0 +1,7 @@
+{question}
+
+Imagine you are the person with the following attributes:
+{attributes}
+
+How exactly would you answer this question 1:1 as if you were this person?
+
