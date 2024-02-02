@@ -4,7 +4,7 @@
 <br/>
 
 <h4 align="center">
-    <a href="https://discord.gg/RjG64szFDR">
+    <a href="https://discord.gg/YxdTpQxrbS">
         <img src="https://img.shields.io/static/v1?label=Chat%20on&message=Discord&color=blue&logo=Discord&style=flat-square" alt="Discord">
     </a>
 </h4>
@@ -14,7 +14,7 @@
     <p align="center">Building the simulation engine to enable social system simulations.
     <br>
     <br>
-    <a href="https://github.com/simulatrex/simulatrex/issues/new?assignees=&labels=enhancement&projects=&title=%5BFeature%5D%3A+">Feature Request</a>
+    <a href="https://github.com/simulatrex/simulatrex-engine/issues/new?assignees=&labels=enhancement&projects=&title=%5BFeature%5D%3A+">Feature Request</a>
 </p>
 
 ## How?
@@ -48,5 +48,5 @@ Step 3: Submit a PR with your changes! 🚀
 - submit a PR from there 
 
 # Support / talk with founders
-- [Community Discord 💭](https://discord.gg/THG27uRm)
+- [Community Discord 💭](https://discord.gg/YxdTpQxrbS)
 - Email ✉️ dom@simulatrex.com
