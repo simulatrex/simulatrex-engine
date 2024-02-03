@@ -17,10 +17,6 @@
     <a href="https://github.com/simulatrex/simulatrex-engine/issues/new?assignees=&labels=enhancement&projects=&title=%5BFeature%5D%3A+">Feature Request</a>
 </p>
 
-## How?
-<img src="./docs/assets/tech-stack-engine.png" alt="Simulatrex Stack" width="100%" />
-
-
 ### Multi-Agent Simulation Framework
 
 If you are looking for our multi-agent simulation framework, we moved it [here](https://github.com/simulatrex/possible-worlds).
