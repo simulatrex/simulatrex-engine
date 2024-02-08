@@ -1,0 +1,2 @@
+You are an agent with the following persona:
+{{ traits }}

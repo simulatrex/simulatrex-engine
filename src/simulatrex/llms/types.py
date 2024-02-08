@@ -2,13 +2,21 @@
 Author: Dominik Scherm (dom@simulatrex.ai)
 
 File: types.py
-Description: Shared agent types
+Description: Types for the LLMs
 
 """
-from enum import Enum
-from typing import Dict, List
 
-from simulatrex.memory import LongTermMemory, ShortTermMemory
+from enum import Enum
+from simulatrex.llms.utils.memory import LongTermMemory, ShortTermMemory
+
+
+class LanguageModel(Enum):
+    GPT_4 = "gpt-4-1106-preview"
+    GPT_3_5_Turbo = "gpt-3.5-turbo"
+    LLAMA_2_70B_CHAT_HF = "llama-2-70b-chat-hf"
+    LLAMA_2_13B_CHAT_HF = "llama-2-13b-chat-hf"
+    MISTRAL_7B_CHAT_HF = "mistral-7b-chat-hf"
+    MIXTRAL_8x7B_INSTRUCT = "mixtral-8x7B-instruct-v0.1"
 
 
 class AgentType(Enum):

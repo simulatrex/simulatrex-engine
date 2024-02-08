@@ -5,6 +5,7 @@ File: memory.py
 Description: Defines the memory class, which is used to define the memory of an agent
 
 """
+
 from datetime import timedelta
 import uuid
 

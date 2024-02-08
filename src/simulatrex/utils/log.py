@@ -5,8 +5,8 @@ File: log_config.py
 Description: Log helper
 
 """
+
 import logging
-import json
 
 from termcolor import colored
 

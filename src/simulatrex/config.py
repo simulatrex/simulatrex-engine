@@ -2,151 +2,73 @@
 Author: Dominik Scherm (dom@simulatrex.ai)
 
 File: config.py
-Description: Defines a config for a simulation
+Description: Configuration for required env vars
 
 """
 
-from pydantic import BaseModel
-from typing import List, Dict, Optional, Union
+import os
+from dotenv import load_dotenv, find_dotenv
+from simulatrex.utils.errors import (
+    InvalidEnvironmentVariableError,
+)
+
+SETTINGS = {
+    "OPENAI_API_KEY": {
+        "default": None,
+        "allowed": None,
+        "user_message": "Please provide your OpenAI API key.",
+    },
+    "API_CALL_TIMEOUT_SEC": {
+        "default": "60",
+        "allowed": None,
+        "user_message": "What is the maximum number of seconds to wait for an API call to return?",
+    },
+}
 
 
-class Objective(BaseModel):
-    id: str
-    description: str
-    metric: Optional[str] = None
-    target: str
+class Config:
+    def __init__(self):
+        self._load_dotenv()
+        self._set_env_vars()
+        self._validate_attributes()
+
+    def _load_dotenv(self) -> None:
+        """
+        Loads environment variables from the .env file.
+        """
+        load_dotenv(dotenv_path=find_dotenv(usecwd=True), override=True)
+
+    def _set_env_vars(self) -> None:
+        """Sets env vars as Config class attributes."""
+        for env_var, config in SETTINGS.items():
+            if value := os.getenv(env_var):
+                setattr(self, env_var, value)
+            elif default_value := config.get("default"):
+                setattr(self, env_var, default_value)
+                os.environ[env_var] = default_value
+
+    def _validate_attributes(self):
+        """Validates that all attributes are allowed values."""
+        for attr, value in self.__dict__.items():
+            config = SETTINGS.get(attr)
+            if config.get("allowed") and value not in config.get("allowed"):
+                raise InvalidEnvironmentVariableError(
+                    f"Variable {attr} has value {value}, which is not allowed.\n"
+                    f"Allowed values are: {config.get('allowed')}. "
+                )
+
+    def get(self, env_var: str) -> str:
+        """
+        Returns the value of an environment variable.
+        - If the environment variable is valid but not set, attempts to set it.
+        """
+        if env_var not in SETTINGS:
+            raise InvalidEnvironmentVariableError(
+                f"Variable {env_var} is not a valid environment variable. "
+                f"Valid environment variables are: {set(SETTINGS.keys())}."
+            )
+        return self.__dict__.get(env_var)
 
 
-class ResponseModel(BaseModel):
-    type: str
-    parameters: Dict[str, float]
-
-
-class AgentIdentity(BaseModel):
-    name: str
-    age: Optional[int] = None
-    gender: Optional[str] = None
-    ethnicity: Optional[str] = None
-    language: Optional[str] = None
-    persona: Optional[str] = None
-    personality_description: Optional[str] = None
-    traits: List[str] = []
-    interests: List[str] = []
-    knowledge_base: List[str] = []
-    skills: List[str] = []
-    behavior_patterns: List[str] = []
-    past_experiences: List[str] = []
-    societal_role: Optional[str] = None
-    affiliations: List[str] = []
-    current_state: Optional[str] = None
-    core_memories: List[str] = []
-
-
-class InitialConditions(BaseModel):
-    awareness: Optional[float] = None
-
-
-class TargetGroupRelationship(BaseModel):
-    target_group_id: str  # ID of the other agent in this relationship
-    type: str  # E.g., "friend", "colleague"
-    strength: float  # E.g., from 0 (acquaintance) to 1 (best friend)
-
-
-class AgentRelationship(BaseModel):
-    agent_id: str  # ID of the other agent in this relationship
-    type: str  # E.g., "friend", "colleague"
-    strength: float  # E.g., from 0 (acquaintance) to 1 (best friend)
-
-    def summary(self) -> str:
-        return f"{self.type.capitalize()} with {self.agent_id} at a strength level of {self.strength}"
-
-
-class AgentGroup(BaseModel):
-    id: str
-    type: str  # E.g., "school", "company"
-    member_agent_ids: List[str]
-    metadata: Optional[Dict[str, Union[str, int, float]]]
-
-
-class Agent(BaseModel):
-    id: str
-    type: str
-    identity: AgentIdentity
-    initial_conditions: InitialConditions
-    cognitive_model: str
-    relationships: List[AgentRelationship]
-    group_affiliations: List[str]
-
-
-class AgentsHierarchy(BaseModel):
-    organizations: List[Dict[str, Union[str, List[str]]]]
-
-
-class MappingRule(BaseModel):
-    csv_column: str
-    agent_attribute: str
-
-
-class DataFeed(BaseModel):
-    type: str
-    location: str
-    mapping_rules: List[MappingRule]
-
-
-class SimulationTimeConfig(BaseModel):
-    start_time: str
-    end_time: str
-    time_multiplier: int
-
-
-class Environment(BaseModel):
-    type: str
-    description: str
-    context: str
-    entities: List[str]
-    time_config: SimulationTimeConfig
-    # data_feed: Union[None, DataFeed]
-
-
-class Event(BaseModel):
-    id: str
-    type: str
-    source: str
-    content: str
-    impact: Optional[float] = None
-    scheduled_time: str
-
-
-class Evaluation(BaseModel):
-    metrics: List[str]
-    objectives: List[Objective]
-
-
-class ExpectedOutcome(BaseModel):
-    average_awareness_level: float
-    highest_influence_platform: str
-    agent_collaboration_count: int
-
-
-class TargetGroup(BaseModel):
-    id: str
-    role: str
-    responsibilities: str
-    initial_conditions: Optional[InitialConditions] = None
-    num_agents: int = 1
-    relationships: Optional[List[TargetGroupRelationship]] = None
-
-
-class SimulationConfig(BaseModel):
-    title: str
-    environment: Environment
-    agents: Optional[List[Agent]] = None
-    groups: Optional[List[AgentGroup]] = None
-    target_groups: Optional[List[TargetGroup]] = None
-    events: List[Event]
-    evaluation: Evaluation
-
-
-class Config(BaseModel):
-    version: str
-    simulation: SimulationConfig
+# Export singleton
+global_config = Config()
