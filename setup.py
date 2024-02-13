@@ -5,13 +5,13 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 setup(
     name="simulatrex",
-    version="0.0.4.1",
+    version="0.1.0",
     author="Dominik Scherm",
     author_email="me@dominikscherm.de",
     description="LLM-based simulation framework",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="https://github.com/simulatrex/simulatrex",
+    url="https://github.com/simulatrex/simulatrex-engine",
     packages=find_packages(where="src"),
     include_package_data=True,
     package_dir={"": "src"},
@@ -29,5 +29,6 @@ setup(
         "requests",
         "instructor",
         "SQLAlchemy",
+        "simpleeval",
     ],
 )
