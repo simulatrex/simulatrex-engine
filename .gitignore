@@ -165,3 +165,5 @@ chromadb/
 
 sqlite_db/
 internal*
+*.out
+parsetab.py

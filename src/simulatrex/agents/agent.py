@@ -19,10 +19,7 @@ from simulatrex.base import Base
 from simulatrex.experiments.questions.question import Question
 from simulatrex.llms.llm_base import LanguageModel
 from simulatrex.utils.sync import sync_wrapper
-from simulatrex.utils.errors import (
-    AgentCombinationError,
-    AgentDirectAnswerFunctionError,
-)
+from simulatrex.utils.errors import AgentCombinationError
 
 
 class Agent(Base):
@@ -51,7 +48,7 @@ class Agent(Base):
         signature = inspect.signature(method)
         for argument in ["question", "scenario", "self"]:
             if argument not in signature.parameters:
-                raise AgentDirectAnswerFunctionError(
+                raise Exception(
                     f"The method {method} does not have a '{argument}' parameter."
                 )
         bound_method = types.MethodType(method, self)
