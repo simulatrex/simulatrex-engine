@@ -41,6 +41,7 @@
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
+    "@types/three": "^0.161.2",
     "autoprefixer": "^10",
     "postcss": "^8",
     "tailwindcss": "^3",
