@@ -6,6 +6,8 @@ Description: Defines a config for a simulation
 
 """
 
+# Outdated, to be removed
+
 from pydantic import BaseModel
 from typing import List, Dict, Optional, Union
 

@@ -15,10 +15,10 @@ from pydantic import BaseModel
 from openai import OpenAI
 import requests
 import instructor
+from simulatrex.llms.types import LanguageModel
 
 load_dotenv()
 
-from simulatrex.agent_utils.types import CognitiveModel
 from simulatrex.utils.log import SingletonLogger
 
 _logger = SingletonLogger
@@ -49,7 +49,7 @@ class OpenAILanguageModel(BaseLanguageModel):
     This is a wrapper for the OpenAI API.
     """
 
-    def __init__(self, model_id=CognitiveModel.GPT_4, agent_id=None):
+    def __init__(self, model_id=LanguageModel.GPT_4, agent_id=None):
         api_key = os.environ.get("OPENAI_API_KEY")
 
         if api_key is None:
@@ -127,7 +127,7 @@ class LlamaLanguageModel(BaseLanguageModel):
     This class is a wrapper for the LLama API.
     """
 
-    def __init__(self, model_id=CognitiveModel.LLAMA_2_70b, agent_id=None):
+    def __init__(self, model_id=LanguageModel.LLAMA_2_70B_CHAT_HF, agent_id=None):
         access_token = os.environ.get("HUGGINGFACE_ACCESS_TOKEN")
 
         if access_token is None:
@@ -140,7 +140,7 @@ class LlamaLanguageModel(BaseLanguageModel):
         self.agent_id = agent_id
 
     async def ask(self, prompt: str) -> str:
-        if self.model_id == CognitiveModel.LLAMA_2_70b:
+        if self.model_id == LanguageModel.LLAMA_2_70B_CHAT_HF:
             try:
                 API_URL = "https://api-inference.huggingface.co/models/meta-llama/Llama-2-70b-chat-hf"
                 headers = {"Authorization": f"Bearer {self.access_token}"}

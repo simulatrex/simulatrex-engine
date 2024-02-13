@@ -1,0 +1,17 @@
+version: '3.8'
+services:
+  api:
+    container_name: api
+    build:
+      context: ./api
+      dockerfile: Dockerfile
+    env_file: ./api/.env
+
+  playground:
+    container_name: playground
+    build:
+      context: ./playground
+      dockerfile: Dockerfile
+    env_file: ./playground/.env
+    environment:
+      - ENVIRONMENT=development

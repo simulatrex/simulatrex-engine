@@ -8,7 +8,6 @@ Description: Scenario class
 
 import copy
 from collections import UserDict
-from rich.table import Table
 
 from simulatrex.base import Base
 

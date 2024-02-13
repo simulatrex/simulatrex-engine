@@ -22,9 +22,6 @@ class Survey(Base):
     def __init__(
         self,
         questions: list[Question] = None,
-        name: str = None,
-        description: str = None,
-        version: str = None,
     ):
         """Creates a new survey."""
         self.questions = questions or []
