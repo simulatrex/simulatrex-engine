@@ -24,14 +24,11 @@ class SimulationRequest(BaseModel):
 @app.post("/api/v1/simulation")
 async def run_simulation(request: SimulationRequest):
     try:
-        print(request.code)
-        # Parse the DSL code
-        simulation_data = parse_dsl(request.code)
-
-        print(simulation_data)
-        # Run the simulation with your simulation engine
-        # For now, we'll just return the parsed data
-
-        return simulation_data
+        simulation = parse_dsl(request.code)
+        if simulation:
+            await simulation.run()  # Ensure this is awaited
+            return {"status": "Simulation completed successfully."}
+        else:
+            return {"status": "No simulation found in the DSL code."}
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))

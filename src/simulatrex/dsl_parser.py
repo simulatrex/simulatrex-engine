@@ -1,21 +1,51 @@
+from simulatrex.simulation_entities import Agent, Simulation
+from jinja2 import Environment
 from ply import lex, yacc
 
-tokens = ("AGENTS", "NUMBER", "LBRACE", "RBRACE", "COLON", "COMMA", "IDENTIFIER")
 
-t_LBRACE = r"\{"
-t_RBRACE = r"\}"
+tokens = (
+    "AGENT",
+    "ENVIRONMENT",
+    "SIMULATION",
+    "IDENTIFIER",
+    "COLON",
+    "NUMBER",
+    "ACTIONS",
+    "ATTRIBUTES",
+    "ELEMENTS",
+    "EPOCHS",
+    "INTERACTIONS",
+)
+
+t_ignore = " \t\n"
+
 t_COLON = r":"
-t_COMMA = r","
-t_IDENTIFIER = r"[a-zA-Z_][a-zA-Z0-9_]*"
+
+
+def t_AGENT(t):
+    r"Agent"
+    return t
+
+
+def t_ENVIRONMENT(t):
+    r"Environment"
+    return t
+
+
+def t_SIMULATION(t):
+    r"Simulation"
+    return t
+
+
+def t_IDENTIFIER(t):
+    r"[a-zA-Z_][a-zA-Z0-9_]*"
+    return t
 
 
 def t_NUMBER(t):
     r"\d+"
     t.value = int(t.value)
     return t
-
-
-t_ignore = " \t\n"
 
 
 def t_error(t):
@@ -26,43 +56,25 @@ def t_error(t):
 lexer = lex.lex()
 
 
-def p_agents(p):
-    "agents : IDENTIFIER LBRACE agent_defs RBRACE"
-    if p[1].lower() == "agents":  # Check if the IDENTIFIER is 'Agents'
-        p[0] = {"agents": p[3]}
-    else:
-        print(f"Syntax error: Expected 'Agents', found '{p[1]}'")
-
-
-def p_agent_defs(p):
-    """agent_defs : agent_def agent_defs_tail
-    | agent_def"""
-    if len(p) == 3:
-        p[0] = [p[1]] + p[2]
-    else:
+def p_start(p):
+    """start : entity
+    | start entity"""
+    if len(p) == 2:
         p[0] = [p[1]]
-
-
-def p_agent_defs_tail(p):
-    """agent_defs_tail : COMMA agent_def agent_defs_tail
-    | COMMA agent_def
-    | empty"""
-    if len(p) == 4:
-        p[0] = [p[2]] + p[3]
-    elif len(p) == 3:
-        p[0] = [p[2]]
     else:
-        p[0] = []
+        p[0] = p[1] + [p[2]]
 
 
-def p_empty(p):
-    "empty :"
-    pass
-
-
-def p_agent_def(p):
-    "agent_def : IDENTIFIER COLON NUMBER"
-    p[0] = {p[1]: p[3]}
+def p_entity(p):
+    """entity : AGENT IDENTIFIER
+    | ENVIRONMENT IDENTIFIER
+    | SIMULATION IDENTIFIER"""
+    if p[1] == "Agent":
+        p[0] = Agent(p[2])
+    elif p[1] == "Environment":
+        p[0] = Environment(p[2])
+    elif p[1] == "Simulation":
+        p[0] = Simulation(p[2])
 
 
 def p_error(p):
@@ -77,15 +89,20 @@ def p_error(p):
 parser = yacc.yacc()
 
 
+# Modify the parse_dsl function to return a Simulation instance
 def parse_dsl(data):
-    return parser.parse(data)
-
-
-# Example usage
-data = """
-Agents {
-    num: 10
-    traits: 5
-}
-"""
-print(parse_dsl(data))
+    parsed_data = parser.parse(data)
+    simulation = None
+    agents = []
+    environment = None
+    for item in parsed_data:
+        if isinstance(item, Simulation):
+            simulation = item
+        elif isinstance(item, Agent):
+            agents.append(item)
+        elif isinstance(item, Environment):
+            environment = item
+    if simulation:
+        simulation.agents = agents
+        simulation.environment = environment
+    return simulation
