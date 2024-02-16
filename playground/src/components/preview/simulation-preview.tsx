@@ -17,10 +17,7 @@ const Preview: React.FC<PreviewProps> = ({ agents }) => {
   const tileColor = "#EEF0F4"; // Light grey for the tiles
 
   return (
-    <Canvas
-      camera={{ position: [size / 2, size, size * 2], fov: 50 }}
-      style={{ background: "white" }}
-    >
+    <Canvas camera={{ position: [size / 2, size, size * 2], fov: 50 }}>
       <ambientLight intensity={0.8} />
       <pointLight position={[size, size, size]} />
       <OrbitControls enableRotate={false} />
@@ -35,15 +32,17 @@ const Preview: React.FC<PreviewProps> = ({ agents }) => {
       </Plane>
 
       {/* Positioning agents on the plane */}
-      {agents.map((agent) => (
-        <Sphere
-          key={agent.id}
-          position={agent.position}
-          args={[0.2, 32, 32]} // args for Sphere: radius, widthSegments, heightSegments
-        >
-          <meshStandardMaterial attach="material" color="red" />
-        </Sphere>
-      ))}
+      {agents &&
+        agents.length > 0 &&
+        agents.map((agent) => (
+          <Sphere
+            key={agent.id}
+            position={agent.position}
+            args={[0.2, 32, 32]} // args for Sphere: radius, widthSegments, heightSegments
+          >
+            <meshStandardMaterial attach="material" color="red" />
+          </Sphere>
+        ))}
     </Canvas>
   );
 };

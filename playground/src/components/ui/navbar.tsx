@@ -13,7 +13,7 @@ export function Navbar({
     >
       <Link
         href="/"
-        className="text-sm font-medium transition-colors hover:text-primary"
+        className="text-sm font-medium transition-colors hover:text-primary dark:text-white"
       >
         Simulatrex Playground
       </Link>

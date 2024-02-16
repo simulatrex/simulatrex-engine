@@ -13,7 +13,12 @@ const CodeEditor = ({
   return (
     <AceEditor
       mode="java" // Java mode for simple highlighting, create a custom mode for your DSL if needed
-      theme="github"
+      theme={
+        typeof window !== "undefined" &&
+        window.document.body.classList.contains("dark")
+          ? "monokai"
+          : "github"
+      }
       onChange={setCode}
       name="code-editor"
       editorProps={{ $blockScrolling: true }}
