@@ -1,5 +1,5 @@
 <div align="center">
-<img src="./docs/assets/cover.png" alt="Simulatrex Engine" width="100%" />
+<img src="./docs/assets/cover.png" alt="Simulatrex" width="100%" />
 </div>
 <br/>
 
@@ -11,7 +11,7 @@
 
 
 <p align="center">
-    <p align="center">Building the simulation engine to enable social system simulations.
+    <p align="center">Enable decision making based on LLM-based simulations
     <br>
     <br>
     <a href="https://github.com/simulatrex/simulatrex-engine/issues/new?assignees=&labels=enhancement&projects=&title=%5BFeature%5D%3A+">Feature Request</a>
@@ -66,6 +66,8 @@ docker compose up
 ```
 
 ---
+
+<img src="./docs/assets/infrastructure.png" alt="Simulatrex Infrastructure" width="100%" />
 
 ## Contributing
 To contribute: Clone the repo locally -> Make a change -> Submit a PR with the change. 
