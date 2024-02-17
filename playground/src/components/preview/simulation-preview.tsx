@@ -1,10 +1,9 @@
-import React from "react";
+import React, { useState } from "react";
 import { Canvas } from "@react-three/fiber";
 import { OrbitControls, Plane, Sphere } from "@react-three/drei";
 
 type Agent = {
-  id: number;
-  position: [number, number, number];
+  id: string;
 };
 
 type PreviewProps = {
@@ -15,6 +14,7 @@ const Preview: React.FC<PreviewProps> = ({ agents }) => {
   // Calculate the size of the environment based on the agents' positions
   const size = 20; // Example size, this can be dynamic
   const tileColor = "#EEF0F4"; // Light grey for the tiles
+  const [hoveredAgentId, setHoveredAgentId] = useState<string | null>(null);
 
   return (
     <Canvas camera={{ position: [size / 2, size, size * 2], fov: 60 }}>
@@ -65,6 +65,9 @@ const Preview: React.FC<PreviewProps> = ({ agents }) => {
                 position={newPosition}
                 args={[agentSize, 32, 32]}
                 rotation={[0, Math.random() * Math.PI * 2, 0]}
+                onClick={() => {
+                  setHoveredAgentId(agent.id);
+                }}
               >
                 <meshStandardMaterial attach="material" color="red" />
               </Sphere>

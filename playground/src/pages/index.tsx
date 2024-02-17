@@ -6,6 +6,7 @@ import { Progress } from "@/components/ui/progress";
 import useSimulation from "@/hooks/useRunSimulation";
 import { Inter } from "next/font/google";
 import { useEffect, useState } from "react";
+import { motion } from "framer-motion";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -16,11 +17,13 @@ export default function Home() {
   const [currentProgress, setCurrentProgress] = useState(0);
   const [simulationData, setSimulationData] = useState(null);
   const [simulationOutcome, setSimulationOutcome] = useState("");
+  const [isRunning, setIsRunning] = useState(false);
 
   const { runSimulation, cancelSimulation } = useSimulation();
 
   // Function to handle run button click
   const handleRunClick = async () => {
+    setIsRunning(true);
     const _simulationData = await runSimulation(code);
     if (_simulationData) {
       setAgents(_simulationData.agents);
@@ -29,8 +32,9 @@ export default function Home() {
     }
   };
 
-  const handleCancelSimulation = async () => {
+  const handleCancelClick = async () => {
     await cancelSimulation();
+    setIsRunning(false);
     setSimulationData(null);
     setAgents([]);
     setCurrentEpoch(0);
@@ -70,8 +74,17 @@ export default function Home() {
             </p>
             <Progress value={currentProgress} className="w-16" />
 
-            <Button onClick={handleRunClick}>Run</Button>
-            <Button onClick={handleCancelSimulation}>Cancel Simulation</Button>
+            <motion.div
+              initial={{ opacity: 0, scale: 0.5 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 2 }}
+            >
+              {isRunning ? (
+                <Button onClick={handleCancelClick}>Cancel Simulation</Button>
+              ) : (
+                <Button onClick={handleRunClick}>Run</Button>
+              )}
+            </motion.div>
           </div>
         </div>
       </div>
@@ -84,9 +97,9 @@ export default function Home() {
           <div className="w-full h-4/5">
             <Preview agents={agents} />
           </div>
-          <div className="h-1/5 overflow-y-auto p-4 bg-gray-50 dark:bg-gray-700">
-            <h2 className="text-lg font-semibold">Simulation Results:</h2>
-            <p>{simulationOutcome}</p>
+          <div className="h-1/5 mt-4 overflow-y-auto p-4 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-800 rounded-lg shadow">
+            <h2 className="text-lg font-semibold mb-2">Simulation Logs:</h2>
+            <p className="whitespace-pre-wrap font-mono">{simulationOutcome}</p>
           </div>
         </div>
       </div>
