@@ -1,5 +1,5 @@
 <div align="center">
-<img src="./docs/assets/cover.png" alt="Simulatrex" width="100%" />
+<img src="./docs/assets/header.png" alt="Simulatrex" width="100%" />
 </div>
 <br/>
 
