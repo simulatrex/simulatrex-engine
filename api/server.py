@@ -1,10 +1,12 @@
 import asyncio
 import json
 import time
-from fastapi import BackgroundTasks, FastAPI, HTTPException, Request, Response
+from fastapi import FastAPI, HTTPException, Request
+from fastapi.responses import StreamingResponse
 from openai import OpenAI
 from pydantic import BaseModel
 from fastapi.middleware.cors import CORSMiddleware
+import logging
 
 from simulatrex.dsl_parser import (
     parse_dsl,
@@ -12,12 +14,13 @@ from simulatrex.dsl_parser import (
 
 app = FastAPI()
 
+# Add CORS middleware
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Allows all origins
+    allow_origins=["*"],  # Allow all originsas needed
     allow_credentials=True,
-    allow_methods=["*"],  # Allows all methods
-    allow_headers=["*"],  # Allows all headers
+    allow_methods=["*"],  # Or specify just the methods you need: ["GET", "POST"]
+    allow_headers=["*"],  # Or specify just the headers you need
 )
 
 
@@ -27,6 +30,22 @@ class SimulationRequest(BaseModel):
 
 simulation_task: asyncio.Task = None
 progress = 0
+simulation_logs = []
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger("simulation_logger")
+
+
+class StreamLogHandler(logging.Handler):
+    def emit(self, record):
+        log_entry = self.format(record)
+        simulation_logs.append(
+            log_entry
+        )  # Assuming simulation_logs is your global list
+
+
+# Add the custom handler to the logger
+logger.addHandler(StreamLogHandler())
 
 
 @app.post("/api/v1/simulation")
@@ -62,21 +81,28 @@ async def run_simulation(request: SimulationRequest):
 @app.route("/api/v1/simulation/stream")
 def stream_simulation_progress(request: Request):
     def generate():
-        global progress
+        global progress, simulation_logs
+        simulation_logs.clear()
         while True:
-            yield f"data: {json.dumps({'progress': progress})}\n\n"
+            data = {"progress": progress, "logs": simulation_logs}
+            yield f"data: {json.dumps(data)}\n\n"
+
             time.sleep(1)  # Adjust the sleep time as needed
 
-    return Response(generate(), media_type="text/event-stream")
+    response = StreamingResponse(generate(), media_type="text/event-stream")
+    response.headers["Access-Control-Allow-Origin"] = "*"  # For testing purposes
+    return response
 
 
 @app.post("/api/v1/simulation/cancel")
 async def cancel_simulation():
     global simulation_task
     global progress
+    global simulation_logs
 
     if simulation_task and not simulation_task.done():
         simulation_task.cancel()
+        simulation_logs.clear()
         print("Simulation cancelled successfully.")
         progress = 0
         try:

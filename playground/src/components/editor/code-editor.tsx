@@ -1,7 +1,7 @@
-import React from "react";
+import React, { useEffect } from "react";
 import AceEditor from "react-ace";
-import "ace-builds/src-noconflict/mode-java";
-import "ace-builds/src-noconflict/theme-github";
+import "ace-builds/src-noconflict/theme-gruvbox_light_hard";
+import "./simulatrex-mode";
 
 const CodeEditor = ({
   code,
@@ -12,13 +12,8 @@ const CodeEditor = ({
 }) => {
   return (
     <AceEditor
-      mode="java" // Java mode for simple highlighting, create a custom mode for your DSL if needed
-      theme={
-        typeof window !== "undefined" &&
-        window.document.body.classList.contains("dark")
-          ? "monokai"
-          : "github"
-      }
+      mode="simulatrex" // Use the custom mode
+      theme="light_hard"
       onChange={setCode}
       name="code-editor"
       editorProps={{ $blockScrolling: true }}

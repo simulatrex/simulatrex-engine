@@ -15,6 +15,7 @@ export default function Home() {
   const [currentEpoch, setCurrentEpoch] = useState(0);
   const [currentProgress, setCurrentProgress] = useState(0);
   const [simulationData, setSimulationData] = useState(null);
+  const [simulationOutcome, setSimulationOutcome] = useState("");
 
   const { runSimulation, cancelSimulation } = useSimulation();
 
@@ -28,14 +29,25 @@ export default function Home() {
     }
   };
 
+  const handleCancelSimulation = async () => {
+    await cancelSimulation();
+    setSimulationData(null);
+    setAgents([]);
+    setCurrentEpoch(0);
+    setCurrentProgress;
+    setSimulationOutcome("");
+  };
+
   useEffect(() => {
     try {
       const eventSource = new EventSource(
         "http://localhost:8000/api/v1/simulation/stream"
       );
       eventSource.onmessage = function (event) {
+        console.log("event", event.data);
         const data = JSON.parse(event.data);
         setCurrentProgress(data.progress);
+        setSimulationOutcome(data.logs);
       };
       return () => {
         eventSource.close();
@@ -59,17 +71,23 @@ export default function Home() {
             <Progress value={currentProgress} className="w-16" />
 
             <Button onClick={handleRunClick}>Run</Button>
-            <Button onClick={cancelSimulation}>Cancel Simulation</Button>
+            <Button onClick={handleCancelSimulation}>Cancel Simulation</Button>
           </div>
         </div>
       </div>
 
       <div className="flex w-full">
         <div className="w-1/2 h-screen p-4 bg-gray-50 dark:bg-gray-700">
-          <CodeEditor code={code} setCode={setCode} />
+          <CodeEditor code={code} setCode={setCode} key={"code-editor"} />
         </div>
         <div className="w-1/2 h-screen p-4">
-          <Preview agents={agents} />
+          <div className="w-full h-4/5">
+            <Preview agents={agents} />
+          </div>
+          <div className="h-1/5 overflow-y-auto p-4 bg-gray-50 dark:bg-gray-700">
+            <h2 className="text-lg font-semibold">Simulation Results:</h2>
+            <p>{simulationOutcome}</p>
+          </div>
         </div>
       </div>
     </main>

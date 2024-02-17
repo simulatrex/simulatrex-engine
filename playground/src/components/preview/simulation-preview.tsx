@@ -13,11 +13,11 @@ type PreviewProps = {
 
 const Preview: React.FC<PreviewProps> = ({ agents }) => {
   // Calculate the size of the environment based on the agents' positions
-  const size = 10; // Example size, this can be dynamic
+  const size = 20; // Example size, this can be dynamic
   const tileColor = "#EEF0F4"; // Light grey for the tiles
 
   return (
-    <Canvas camera={{ position: [size / 2, size, size * 2], fov: 50 }}>
+    <Canvas camera={{ position: [size / 2, size, size * 2], fov: 60 }}>
       <ambientLight intensity={0.8} />
       <pointLight position={[size, size, size]} castShadow />
 
@@ -26,7 +26,7 @@ const Preview: React.FC<PreviewProps> = ({ agents }) => {
       {/* Create a tilted plane to represent the environment */}
       <Plane
         rotation={[-Math.PI / 2, 0, 0]} // rotate the plane to be horizontal
-        position={[size / 2, 0, size / 2]}
+        position={[size / 2 - 5, 0, size / 2]}
         args={[size, size]} // size of the plane
       >
         <meshStandardMaterial attach="material" color={tileColor} />

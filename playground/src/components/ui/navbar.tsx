@@ -13,9 +13,14 @@ export function Navbar({
     >
       <Link
         href="/"
-        className="text-sm font-medium transition-colors hover:text-primary dark:text-white"
+        className="text-xl font-medium transition-colors hover:text-primary dark:text-white flex space-x-2"
       >
-        Simulatrex Playground
+        <img
+          src="/simulatrex-logo-black.png"
+          alt="Simulatrex.ai"
+          className="w-auto h-6"
+        />
+        <span>Playground</span>
       </Link>
     </nav>
   );
