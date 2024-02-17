@@ -21,7 +21,6 @@ setup(
     install_requires=[
         "openai",
         "uuid",
-        "pandas",
         "termcolor",
         "chromadb",
         "pydantic",
@@ -29,7 +28,7 @@ setup(
         "requests",
         "instructor",
         "SQLAlchemy",
-        "simpleeval",
         "nest_asyncio",
+        "ply",
     ],
 )
