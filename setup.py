@@ -30,5 +30,6 @@ setup(
         "instructor",
         "SQLAlchemy",
         "simpleeval",
+        "nest_asyncio",
     ],
 )

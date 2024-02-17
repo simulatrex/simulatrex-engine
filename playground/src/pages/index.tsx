@@ -2,9 +2,10 @@ import CodeEditor from "@/components/editor/code-editor";
 import Preview from "@/components/preview/simulation-preview";
 import { Button } from "@/components/ui/button";
 import { Navbar } from "@/components/ui/navbar";
-import useRunSimulation from "@/hooks/useRunSimulation";
+import { Progress } from "@/components/ui/progress";
+import useSimulation from "@/hooks/useRunSimulation";
 import { Inter } from "next/font/google";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -12,29 +13,53 @@ export default function Home() {
   const [code, setCode] = useState("");
   const [agents, setAgents] = useState([]);
   const [currentEpoch, setCurrentEpoch] = useState(0);
+  const [currentProgress, setCurrentProgress] = useState(0);
+  const [simulationData, setSimulationData] = useState(null);
 
-  const { runSimulation } = useRunSimulation();
+  const { runSimulation, cancelSimulation } = useSimulation();
 
   // Function to handle run button click
   const handleRunClick = async () => {
-    const simulationData = await runSimulation(code);
-    if (simulationData) {
-      setAgents(simulationData.agents);
-      setCurrentEpoch(simulationData.epoch);
+    const _simulationData = await runSimulation(code);
+    if (_simulationData) {
+      setAgents(_simulationData.agents);
+      setCurrentEpoch(_simulationData.epoch);
+      setSimulationData(_simulationData);
     }
   };
+
+  useEffect(() => {
+    try {
+      const eventSource = new EventSource(
+        "http://localhost:8000/api/v1/simulation/stream"
+      );
+      eventSource.onmessage = function (event) {
+        const data = JSON.parse(event.data);
+        setCurrentProgress(data.progress);
+      };
+      return () => {
+        eventSource.close();
+      };
+    } catch (error) {
+      console.error("EventSource failed:", error);
+
+      return () => {};
+    }
+  }, []);
 
   return (
     <main className={`${inter.className} bg-white dark:bg-[#181818]`}>
       <div className="border-b">
         <div className="h-16 flex items-center px-4">
           <Navbar className="mx-6" />
-          <div className="flex items-center ml-auto space-x-4">
-            <p className="text-gray-700 dark:text-white">
-              Current Epoch: {currentEpoch}
-            </p>{" "}
-            {/* Display the current epoch */}
+          <div className="flex items-center space-x-4 ml-auto">
+            <p className="text-gray-700 dark:text-white break-none w-auto">
+              Epoch: {currentEpoch}
+            </p>
+            <Progress value={currentProgress} className="w-16" />
+
             <Button onClick={handleRunClick}>Run</Button>
+            <Button onClick={cancelSimulation}>Cancel Simulation</Button>
           </div>
         </div>
       </div>

@@ -8,4 +8,5 @@ pydantic
 python-dotenv
 requests
 instructor
+nest_asyncio
 SQLAlchemy

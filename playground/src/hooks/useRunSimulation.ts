@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-const useRunSimulation = () => {
+const useSimulation = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
@@ -27,7 +27,27 @@ const useRunSimulation = () => {
     }
   };
 
-  return { runSimulation, loading, error };
+  const cancelSimulation = async () => {
+    try {
+      const response = await fetch(
+        "http://localhost:8000/api/v1/simulation/cancel",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      if (!response.ok) {
+        throw new Error("Failed to cancel simulation");
+      }
+      console.log("Simulation cancelled successfully");
+    } catch (error) {
+      console.error("Error cancelling simulation:", error);
+    }
+  };
+
+  return { runSimulation, cancelSimulation, loading, error };
 };
 
-export default useRunSimulation;
+export default useSimulation;

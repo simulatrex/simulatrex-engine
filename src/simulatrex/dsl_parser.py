@@ -196,9 +196,7 @@ def parse_dsl(data):
     try:
         parsed_data = parser.parse(data)
     except Exception as e:
-        print("Error parsing:", e)
         return None
-    print("Parsed data", parsed_data)
     if not parsed_data:
         return None  # Early return if parsed_data is empty or None
 
@@ -215,7 +213,6 @@ def parse_dsl(data):
         elif isinstance(item, Environment) and environment is None:
             environment = item
 
-    print("Simulation:", simulation)
     if simulation:
         simulation.agents = agents
         simulation.environment = environment

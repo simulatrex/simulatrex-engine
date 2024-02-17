@@ -19,7 +19,8 @@ const Preview: React.FC<PreviewProps> = ({ agents }) => {
   return (
     <Canvas camera={{ position: [size / 2, size, size * 2], fov: 50 }}>
       <ambientLight intensity={0.8} />
-      <pointLight position={[size, size, size]} />
+      <pointLight position={[size, size, size]} castShadow />
+
       <OrbitControls enableRotate={false} />
 
       {/* Create a tilted plane to represent the environment */}
@@ -32,17 +33,44 @@ const Preview: React.FC<PreviewProps> = ({ agents }) => {
       </Plane>
 
       {/* Positioning agents on the plane */}
+
       {agents &&
         agents.length > 0 &&
-        agents.map((agent) => (
-          <Sphere
-            key={agent.id}
-            position={agent.position}
-            args={[0.2, 32, 32]} // args for Sphere: radius, widthSegments, heightSegments
-          >
-            <meshStandardMaterial attach="material" color="red" />
-          </Sphere>
-        ))}
+        agents.map((agent, index) => {
+          // Distribute agents evenly across the plane
+          const xPosition =
+            (index % Math.ceil(Math.sqrt(agents.length))) *
+            (size / Math.ceil(Math.sqrt(agents.length)));
+          const zPosition =
+            Math.floor(index / Math.ceil(Math.sqrt(agents.length))) *
+            (size / Math.ceil(Math.sqrt(agents.length)));
+
+          // Increase yPosition to lift agents further above the plane
+          const yPosition = 0.5; // Adjust this value as needed to lift agents higher
+
+          // Calculate new positions with margin, keeping xPosition and zPosition calculations the same
+          const newPosition: [number, number, number] = [
+            xPosition,
+            yPosition,
+            zPosition,
+          ];
+
+          const agentSize = size / 10; // Adjust size as needed
+
+          return (
+            <React.Fragment key={agent.id}>
+              <Sphere
+                castShadow
+                receiveShadow
+                position={newPosition}
+                args={[agentSize, 32, 32]}
+                rotation={[0, Math.random() * Math.PI * 2, 0]}
+              >
+                <meshStandardMaterial attach="material" color="red" />
+              </Sphere>
+            </React.Fragment>
+          );
+        })}
     </Canvas>
   );
 };

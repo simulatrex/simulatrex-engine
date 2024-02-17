@@ -6,9 +6,11 @@ Description: LLM Models
 
 """
 
+import asyncio
 import os
 import json
 from abc import ABC, abstractmethod
+import aiohttp
 
 from dotenv import load_dotenv
 from pydantic import BaseModel
@@ -68,13 +70,17 @@ class OpenAILanguageModel(BaseLanguageModel):
         self, prompt: str, context_prompt=DEFAULT_SYSTEM_PROMPT, temperature=1.0
     ) -> str:
         try:
-            chat_completion = self.client.chat.completions.create(
-                messages=[
-                    {"role": "system", "content": context_prompt},
-                    {"role": "user", "content": prompt},
-                ],
-                model=self.model_id.value,
-                temperature=temperature,
+            loop = asyncio.get_event_loop()
+            chat_completion = await loop.run_in_executor(
+                None,
+                lambda: self.client.chat.completions.create(
+                    messages=[
+                        {"role": "system", "content": context_prompt},
+                        {"role": "user", "content": prompt},
+                    ],
+                    model=self.model_id.value,
+                    temperature=temperature,
+                ),
             )
             response_message = chat_completion.choices[0].message.content
 
@@ -99,14 +105,18 @@ class OpenAILanguageModel(BaseLanguageModel):
         temperature=1.0,
     ):
         try:
-            structured_response = self.client.chat.completions.create(
-                messages=[
-                    {"role": "system", "content": context_prompt},
-                    {"role": "user", "content": prompt},
-                ],
-                response_model=response_model,
-                model=self.model_id.value,
-                temperature=temperature,
+            loop = asyncio.get_event_loop()
+            structured_response = await loop.run_in_executor(
+                None,
+                lambda: self.client.chat.completions.create(
+                    messages=[
+                        {"role": "system", "content": context_prompt},
+                        {"role": "user", "content": prompt},
+                    ],
+                    response_model=response_model,
+                    model=self.model_id.value,
+                    temperature=temperature,
+                ),
             )
 
             # Log the response
@@ -145,23 +155,23 @@ class LlamaLanguageModel(BaseLanguageModel):
                 API_URL = "https://api-inference.huggingface.co/models/meta-llama/Llama-2-70b-chat-hf"
                 headers = {"Authorization": f"Bearer {self.access_token}"}
 
-                response = requests.post(
-                    API_URL,
-                    headers=headers,
-                    json={
-                        "inputs": prompt,
-                        "options": {
-                            "use_cache": False,
-                            "wait_for_model": True,
+                async with aiohttp.ClientSession() as session:
+                    async with session.post(
+                        API_URL,
+                        headers=headers,
+                        json={
+                            "inputs": prompt,
+                            "options": {
+                                "use_cache": False,
+                                "wait_for_model": True,
+                            },
+                            "parameters": {
+                                "max_length": 4096,
+                            },
                         },
-                        "parameters": {
-                            "max_length": 4096,
-                        },
-                    },
-                )
-
-                result = response.json()
-                result_text = result["generated_text"]
+                    ) as response:
+                        result = await response.json()
+                        result_text = result["generated_text"]
 
                 # Log the response
                 if self.agent_id:

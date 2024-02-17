@@ -23,6 +23,13 @@ class Agent:
         else:
             print(f"Agent {self.identifier} has no LLM to generate action.")
 
+    def to_dict(self):
+        return {
+            "id": self.identifier,
+            "attributes": self.attributes,
+            "actions": self.actions,
+        }
+
 
 class Environment:
     def __init__(self, identifier, entities=None):
@@ -39,6 +46,12 @@ class Environment:
         for entity in self.entities:
             print(f"Interacting with entity: {entity}")
             # Example entity interaction can be added here
+
+    def to_dict(self):
+        return {
+            "id": self.identifier,
+            "entities": self.entities,
+        }
 
 
 class Simulation:
@@ -75,3 +88,10 @@ class Simulation:
             for interaction in self.interactions:
                 print(f"Executing interaction: {interaction}")
         print(f"Simulation {self.identifier} ended.")
+
+    def to_dict(self):
+        return {
+            "id": self.identifier,
+            "epochs": self.epochs,
+            "interactions": self.interactions,
+        }
