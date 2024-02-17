@@ -1,7 +1,5 @@
 openai
 uuid
-numpy
-torch
 termcolor
 chromadb
 pydantic
@@ -9,3 +7,5 @@ python-dotenv
 requests
 instructor
 SQLAlchemy
+nest_asyncio
+ply

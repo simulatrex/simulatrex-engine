@@ -1,0 +1,4 @@
+fastapi
+simulatrex
+pydantic
+requests

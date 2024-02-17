@@ -1,0 +1,9 @@
+{question_text}
+
+Please submit your response in a valid JSON format as shown below:
+{
+    "answer": ["word or phrase one", "word or phrase two", ...],
+    "comment": "Your comment here"
+}
+
+Please limit your answer to a maximum of { max_list_items } items.
