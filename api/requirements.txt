@@ -2,4 +2,3 @@ fastapi
 simulatrex
 pydantic
 requests
-
