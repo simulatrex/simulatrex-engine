@@ -1,6 +1,7 @@
-import React, { useEffect } from "react";
+import React from "react";
 import AceEditor from "react-ace";
 import "ace-builds/src-noconflict/theme-gruvbox_light_hard";
+import "ace-builds/src-noconflict/theme-gruvbox_dark_hard";
 import "./simulatrex-mode";
 
 const CodeEditor = ({
@@ -13,7 +14,12 @@ const CodeEditor = ({
   return (
     <AceEditor
       mode="simulatrex" // Use the custom mode
-      theme="light_hard"
+      theme={
+        typeof window !== "undefined" &&
+        window.matchMedia("(prefers-color-scheme: dark)").matches
+          ? "gruvbox_dark_hard"
+          : "gruvbox_light_hard"
+      }
       onChange={setCode}
       name="code-editor"
       editorProps={{ $blockScrolling: true }}
