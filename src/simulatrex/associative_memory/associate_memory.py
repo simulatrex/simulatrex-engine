@@ -10,11 +10,10 @@ Description: An associative memory for the simulation
 
 Park, J.S., O'Brien, J.C., Cai, C.J., Morris, M.R., Liang, P. and Bernstein,
 M.S., 2023. Generative agents: Interactive simulacra of human behavior. arXiv
-preprint arXiv:2304.03442.
+preprint arXiv:2304.03442. 
 """
 from collections.abc import Callable, Iterable
 import datetime
-import threading
 import typing
 
 import numpy as np
@@ -35,7 +34,7 @@ class AssociativeMemory:
           text_embedding_model: text embedding model
           importance_scale: maps a sentence into [0,1] scale of importance
         """
-        self._memory_bank_lock = threading.Lock()
+        # self._memory_bank_lock = threading.Lock()
         self._embedder = text_embedding_model
         self._importance = importance
 

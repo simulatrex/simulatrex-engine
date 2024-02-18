@@ -48,11 +48,21 @@ const ResizableContainer: React.FC<ResizableContainerProps> = ({
       let newWidth = width;
       let newHeight = height;
 
-      if (resizeDirection === "x" || resizeDirection === "both") {
-        newWidth = Math.max(100, clientX - left + 10); // 10px for the grab area
+      // Adjusting the condition to check if the mouse is near the border, not just at the border
+      const isNearRightBorder = clientX > left + width - 20; // 20px for the grab area
+      const isNearBottomBorder = clientY > top + height - 20; // 20px for the grab area
+
+      if (
+        (resizeDirection === "x" || resizeDirection === "both") &&
+        isNearRightBorder
+      ) {
+        newWidth = Math.max(100, clientX - left); // Adjusted to not add extra space
       }
-      if (resizeDirection === "y" || resizeDirection === "both") {
-        newHeight = Math.max(100, clientY - top + 10); // 10px for the grab area
+      if (
+        (resizeDirection === "y" || resizeDirection === "both") &&
+        isNearBottomBorder
+      ) {
+        newHeight = Math.max(100, clientY - top); // Adjusted to not add extra space
       }
 
       updateDimensions(newWidth, newHeight);

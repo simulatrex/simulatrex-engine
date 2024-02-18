@@ -12,7 +12,8 @@ import logging
 from typing import Union
 
 from simulatrex.associative_memory import associate_memory
-from simulatrex.types.agent import AgentResponse
+from simulatrex.llms.models import OpenAILanguageModel
+from simulatrex.types.agent import ActionSpec, AgentResponse
 
 from simulatrex.base import Base
 from simulatrex.experiments.questions.question import Question
@@ -34,8 +35,7 @@ class GenerativeAgent(Base):
         identifier: str,
         attributes: dict = None,
         instructions: str = None,
-        model_id: LanguageModelId = LanguageModelId.GPT_4_TURBO,
-        memory: associate_memory.AssociativeMemory = None,
+        llm_model_id: LanguageModelId = LanguageModelId.GPT_4_TURBO,
         user_controlled: bool = False,
         logger=logging.getLogger("simulation_logger"),
         verbose: bool = False,
@@ -44,11 +44,10 @@ class GenerativeAgent(Base):
         self.attributes = attributes or dict()
         self.instructions = instructions or self.default_instruction
 
-        self._llm = LanguageModelId(model_id) if model_id else None
-        self._memory = memory
+        self._llm = OpenAILanguageModel(llm_model_id) if llm_model_id else None
         self._user_controlled = user_controlled
         self._logger = logger
-        self_verbose = verbose
+        self._verbose = verbose
 
     @property
     def id(self) -> str:
@@ -57,61 +56,28 @@ class GenerativeAgent(Base):
     def copy(self) -> GenerativeAgent:
         """Creates a copy of the agent."""
         return copy.deepcopy(self)
-    
-    async def act(self, action_spec: Question) -> AgentResponse:
+
+    async def act(self, actions: ActionSpec) -> AgentResponse:
         """Generates a response to a question."""
         if self._llm:
-            for action in self.actions:
-                response = await self.llm.ask(f"Generate an action for: {action}.")
-                self.logger.info(
+            for action in actions:
+                response = await self._llm.ask(f"Generate an action for: {action}.")
+                self._logger.info(
                     f"Agent {self.identifier} action for {action}: {response}"
                 )
         else:
             raise ValueError(f"Agent {self.identifier} has no LLM to generate action.")
-    
-    def __add__(self, other_agent: GenerativeAgent = None) -> GenerativeAgent:
-        """
-        Combines two agents by joining their traits
-        """
-        if other_agent is None:
-            return self
-        elif common_attributes := set(self.attributes.keys()) & set(other_agent.attributes.keys()):
-            raise AgentCombinationError(
-                f"The agents have overlapping traits: {
-                    ', '.join(common_attributes)
-                }."
-            )
-        else:
-            new_agent = GenerativeAgent(attributes=copy.deepcopy(self.attributes))
-            new_agent.attributes.update(other_agent.attributes)
-            return new_agent
-
-    def __eq__(self, other: GenerativeAgent) -> bool:
-        """Checks if two agents are equal. Only checks the traits."""
-        return self.data == other.data
-
-    def __repr__(self):
-        class_name = self.__class__.__name__
-        items = [
-            f"{k} = '{v}'" if isinstance(v, str) else f"{k} = {v}"
-            for k, v in self.data.items()
-            if k != "question_type"
-        ]
-        return f"{class_name}({', '.join(items)})"
-
-    @property
-    def data(self):
-        raw_data = {
-            k.replace("_", "", 1): v
-            for k, v in self.__dict__.items()
-            if k.startswith("_")
-        }
-
-        return raw_data
 
     def to_dict(self) -> dict[str, Union[dict, bool]]:
         """Serializes to a dictionary."""
-        return self.data
+        return {
+            "identifier": self.identifier,
+            "attributes": self.attributes,
+            "instructions": self.instructions,
+            "llm_model_id": self._llm.model_id,
+            "user_controlled": self._user_controlled,
+            "verbose": self._verbose,
+        }
 
     @classmethod
     def from_dict(cls, agent_dict: dict[str, Union[dict, bool]]) -> GenerativeAgent:

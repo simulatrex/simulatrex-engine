@@ -6,26 +6,54 @@ Description: Agent type defintions for the simulation
 
 """
 
-from pydantic import BaseModel
 from typing import List, Dict, Optional, Union
 from collections import UserDict
 
+from pydantic import BaseModel
+from simulatrex.base import Base
 
-class ActionSpec:
+
+class ActionSpec(Base):
     """A specification of the action that agent is queried for.
 
     Attributes:
-      call_to_action: fromated text that conditions agents response. {agent_id}
+      call_to_action: formatted text that conditions agents response. {agent_id}
         and {timedelta} will be inserted by the agent.
-      output_type: type of output - FREE, CHOICE or FLOAT
+      output_type: type of output - FREE, CHOICE, or FLOAT
       options: if multiple choice, then provide possible answers here
-      tag: a tag to add to the activity memory (e.g. action, speach, etc.)
+      tag: a tag to add to the activity memory (e.g., action, speech, etc.)
     """
 
-    call_to_action: str
-    output_type: str
-    options: Optional[List[str]] = None
-    type: Optional[str] = None
+    def __init__(
+        self,
+        call_to_action: str,
+        output_type: str,
+        options: Optional[List[str]] = None,
+        tag: Optional[str] = None,
+    ):
+        self.call_to_action = call_to_action
+        self.output_type = output_type
+        self.options = options
+        self.tag = tag
+
+    @classmethod
+    def from_dict(cls, data: Dict[str, Union[str, List[str], None]]) -> "ActionSpec":
+        """Creates an instance of ActionSpec from a dictionary."""
+        return cls(
+            call_to_action=data.get("call_to_action", ""),
+            output_type=data.get("output_type", "FREE"),
+            options=data.get("options", None),
+            tag=data.get("tag", None),
+        )
+
+    def to_dict(self) -> Dict[str, Union[str, List[str], None]]:
+        """Serializes the instance to a dictionary."""
+        return {
+            "call_to_action": self.call_to_action,
+            "output_type": self.output_type,
+            "options": self.options,
+            "tag": self.tag,
+        }
 
 
 OUTPUT_TYPES = ["FREE", "CHOICE", "FLOAT"]
@@ -50,10 +78,10 @@ DEFAULT_CALL_TO_ACTION = (
 
 
 DEFAULT_ACTION_SPEC = ActionSpec(
-    call_to_action=DEFAULT_CALL_TO_ACTION,
-    output_type="FREE",
+    DEFAULT_CALL_TO_ACTION,
+    "FREE",
     options=None,
-    type="action",
+    tag="action",
 )
 
 

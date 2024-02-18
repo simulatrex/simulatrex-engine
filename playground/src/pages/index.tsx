@@ -109,12 +109,14 @@ export default function Home() {
             <Preview agents={agents} />
           </div>
 
-          <div className="w-full h-1/5 mt-4 overflow-y-auto p-4 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-800 rounded-lg shadow">
+          <div className="w-full h-auto mt-4 overflow-y-auto p-4 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-800 rounded-lg shadow">
             <h2 className="text-lg font-semibold mb-2 text-gray-700 dark:text-white">
               Simulation Logs:
             </h2>
 
-            <p className="whitespace-pre-wrap font-mono">{simulationOutcome}</p>
+            <p className="whitespace-pre-wrap font-mono text-gray-600 dark:text-gray-200">
+              {simulationOutcome}
+            </p>
           </div>
         </ResizableContainer>
       </div>
