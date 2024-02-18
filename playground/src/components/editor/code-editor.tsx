@@ -1,6 +1,5 @@
 import React from "react";
 import AceEditor from "react-ace";
-import "ace-builds/src-noconflict/theme-gruvbox_light_hard";
 import "ace-builds/src-noconflict/theme-gruvbox_dark_hard";
 import "./simulatrex-mode";
 
@@ -18,7 +17,7 @@ const CodeEditor = ({
         typeof window !== "undefined" &&
         window.matchMedia("(prefers-color-scheme: dark)").matches
           ? "gruvbox_dark_hard"
-          : "gruvbox_light_hard"
+          : undefined
       }
       onChange={setCode}
       name="code-editor"
